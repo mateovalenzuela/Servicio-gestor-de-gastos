@@ -1,4 +1,4 @@
-﻿namespace BackendGastos.Controller.DTOs.CategoriaGasto
+﻿namespace BackendGastos.Service.DTOs.CategoriaGasto
 {
     public class InsertUpdateCategoriaGastoDto
     {

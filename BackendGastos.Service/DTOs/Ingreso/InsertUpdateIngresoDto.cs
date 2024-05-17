@@ -1,9 +1,7 @@
-﻿namespace BackendGastos.Controller.DTOs.Ingreso
+﻿namespace BackendGastos.Service.DTOs.Ingreso
 {
-    public class IngresoDto
+    public class InsertUpdateIngresoDto
     {
-        public long Id { get; set; }
-
         public string Descripcion { get; set; } = null!;
 
         public decimal Importe { get; set; }

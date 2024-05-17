@@ -1,4 +1,4 @@
-﻿using BackendGastos.Controller.DTOs.Moneda;
+﻿using BackendGastos.Service.DTOs.Moneda;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

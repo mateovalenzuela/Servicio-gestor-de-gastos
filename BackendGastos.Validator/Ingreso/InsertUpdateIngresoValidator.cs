@@ -1,4 +1,4 @@
-﻿using BackendGastos.Controller.DTOs.Ingreso;
+﻿using BackendGastos.Service.DTOs.Ingreso;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

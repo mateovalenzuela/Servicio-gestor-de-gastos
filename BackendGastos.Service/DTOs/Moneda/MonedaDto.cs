@@ -1,4 +1,4 @@
-﻿namespace BackendGastos.Controller.DTOs.Moneda
+﻿namespace BackendGastos.Service.DTOs.Moneda
 {
     public class MonedaDto
     {

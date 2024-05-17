@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Validator.CategoriaIngreso;
+using BackendGastos.Service.Services;
+using FluentValidation;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,112 +12,75 @@ namespace BackendGastos.Controllers
     [ApiController]
     public class CategoriaIngresoController : ControllerBase
     {
-        /*
-        private ProyectoGastosTestContext _context;
 
-        public CategoriaIngresoController(ProyectoGastosTestContext context)
+        private IValidator<CategoriaIngresoDto> _categoriaIngresoValidator;
+        private IValidator<InsertUpdateCategoriaIngresoDto> _insertUpdateCategoriaIngresoValidator;
+        private ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto> _categoriaIngresoService;
+
+        public CategoriaIngresoController(IValidator<CategoriaIngresoDto> categoriaIngresoValidator,
+            IValidator<InsertUpdateCategoriaIngresoDto> insertUpdateCategoriaIngresoValidator,
+            ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto> categoriaIngresoService)
         {
-            _context = context;
+            _categoriaIngresoValidator = categoriaIngresoValidator;
+            _insertUpdateCategoriaIngresoValidator = insertUpdateCategoriaIngresoValidator;
+            _categoriaIngresoService = categoriaIngresoService;
         }
 
         // GET: api/<CategoriaIngresoController>
         [HttpGet]
-        public async Task<IEnumerable<ReaderCategoriaIngresoDto>> Get()
-        {
-            var categoriasIngreso = await _context.GastosCategoriaigresos.Select(c => new ReaderCategoriaIngresoDto
-            {
-                Id = c.Id,
-                Descripcion = c.Descripcion,
-                FechaCreacion = c.FechaCreacion,
-                Baja = c.Baja,
-            }).ToListAsync();
-
-            return categoriasIngreso;
-        }
+        public async Task<IEnumerable<CategoriaIngresoDto>> Get()
+            => await _categoriaIngresoService.Get();
 
         // GET api/<CategoriaIngresoController>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoriaIngresoDto>> Get(long id)
         {
-            var categoriaIngreso = await _context.GastosCategoriaigresos.FindAsync(id);
+            var categoriaIngresoDto = await _categoriaIngresoService.GetById(id);
 
-            if (categoriaIngreso == null)
-            {
-                return NotFound();
-            }
-
-            var categoriaIngresoDto = new CategoriaIngresoDto
-            {
-                Id = categoriaIngreso.Id,
-                Descripcion = categoriaIngreso.Descripcion,
-            };
-                
-            return Ok(categoriaIngresoDto);
+            return categoriaIngresoDto == null ? NotFound() : Ok(categoriaIngresoDto);               
         }
 
         // POST api/<CategoriaIngresoController>
         [HttpPost]
         public async Task<ActionResult<CategoriaIngresoDto>> Add(InsertUpdateCategoriaIngresoDto insertCategoriaIngresoDto)
         {
-            var categoriaIngreso = new GastosCategoriaigreso()
+            var validationResult = await _insertUpdateCategoriaIngresoValidator.ValidateAsync(insertCategoriaIngresoDto);
+
+            if (!validationResult.IsValid)
             {
-                Descripcion = insertCategoriaIngresoDto.Descripcion
-            };
-            categoriaIngreso.FechaCreacion = DateTime.UtcNow;
+                return BadRequest(validationResult);
+            }
 
+            var categoriaIngresoDto = await _categoriaIngresoService.Add(insertCategoriaIngresoDto);
 
-            await _context.GastosCategoriaigresos.AddAsync(categoriaIngreso);
-            await _context.SaveChangesAsync();
-
-            var categoriaDto = new CategoriaIngresoDto()
-            {
-                Id = categoriaIngreso.Id,
-                Descripcion = categoriaIngreso.Descripcion
-            };
-
-            return CreatedAtAction(nameof(Get), new {id = categoriaIngreso.Id}, categoriaDto);
+            return CreatedAtAction(nameof(Get), new {id = categoriaIngresoDto.Id}, categoriaIngresoDto);
         }
 
         // PUT api/<CategoriaIngresoController>/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<CategoriaIngresoDto>> Put(long id, InsertUpdateCategoriaIngresoDto categoriaIngresoDto)
+        public async Task<ActionResult<CategoriaIngresoDto>> Put(long id, InsertUpdateCategoriaIngresoDto insertCategoriaIngresoDto)
         {
-            var categoriaIngreso = await _context.GastosCategoriaigresos.FindAsync(id);
+            var validationResult = await _insertUpdateCategoriaIngresoValidator.ValidateAsync(insertCategoriaIngresoDto);
 
-            if (categoriaIngreso == null)
+            if (!validationResult.IsValid)
             {
-                return NotFound();
+                return BadRequest(validationResult);
             }
 
-            categoriaIngreso.Descripcion = categoriaIngresoDto.Descripcion;
-            await _context.SaveChangesAsync();
-
-
-            var categoriaDto = new CategoriaIngresoDto()
-            {
-                Id = categoriaIngreso.Id,
-                Descripcion = categoriaIngreso.Descripcion
-            };
-            return Ok(categoriaDto);
+            var categoriaIngresoDto = await _categoriaIngresoService.Update(id, insertCategoriaIngresoDto);  
+            
+            return categoriaIngresoDto == null? NotFound() : Ok(categoriaIngresoDto);
         }
 
         // DELETE api/<CategoriaIngresoController>/5
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(long id)
         {
-            var categoriaIngreso = await _context.GastosCategoriaigresos.FindAsync(id);
+            var categoriaIngresoDto = await _categoriaIngresoService.Delete(id);
 
-            if (categoriaIngreso == null)
-            {
-                return NotFound();
-            }
-
-            categoriaIngreso.Baja = true;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return categoriaIngresoDto == null ? NotFound() : Ok(categoriaIngresoDto);
         }
-        */
+        
     }
         
 }

@@ -1,4 +1,4 @@
-﻿namespace BackendGastos.Controller.DTOs.SubCategoriaGasto
+﻿namespace BackendGastos.Service.DTOs.SubCategoriaGasto
 {
     public class SubCategoriaGastoDto
     {

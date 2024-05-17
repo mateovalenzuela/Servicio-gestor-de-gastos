@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    internal class SubCategoriaGastoRepository : ISubCategoriaGastoRepository<GastosSubcategoriagasto>
+    public class SubCategoriaGastoRepository : ISubCategoriaGastoRepository<GastosSubcategoriagasto>
     {
         private ProyectoGastosTestContext _context;
         public SubCategoriaGastoRepository(ProyectoGastosTestContext context)

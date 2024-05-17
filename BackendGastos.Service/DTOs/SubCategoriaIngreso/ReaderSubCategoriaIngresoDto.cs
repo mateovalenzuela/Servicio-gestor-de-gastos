@@ -1,12 +1,12 @@
-﻿namespace BackendGastos.Controller.DTOs.SubCategoriaGasto
+﻿namespace BackendGastos.Service.DTOs.SubCategoriaIngreso
 {
-    public class ReaderSubCategoriaGastoDto
+    public class ReaderSubCategoriaIngresoDto
     {
         public long Id { get; set; }
 
         public string Descripcion { get; set; }
 
-        public long CategoriaGastoId { get; set; }
+        public long CategoriaIngresoId { get; set; }
 
         public long UsuarioId { get; set; }
 

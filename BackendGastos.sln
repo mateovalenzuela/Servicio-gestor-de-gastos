@@ -4,15 +4,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Controller", "BackendGastos\BackendGastos.Controller.csproj", "{C827ED45-6EFD-4ADC-9671-71ED219F50AB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EA60CF89-E119-4F4D-A836-FF66317AAA35} = {EA60CF89-E119-4F4D-A836-FF66317AAA35}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Service", "BackendGastos.Service\BackendGastos.Service.csproj", "{FAB1CD2A-5667-47A1-A606-85FC0158C6B9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Repository", "BackendGastos.Repository\BackendGastos.Repository.csproj", "{5A07D8AD-471C-41B5-88F9-596058BBEC67}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Validator", "BackendGastos.Validator\BackendGastos.Validator.csproj", "{EA60CF89-E119-4F4D-A836-FF66317AAA35}"
-	ProjectSection(ProjectDependencies) = postProject
-		{C827ED45-6EFD-4ADC-9671-71ED219F50AB} = {C827ED45-6EFD-4ADC-9671-71ED219F50AB}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

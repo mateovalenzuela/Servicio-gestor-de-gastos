@@ -1,4 +1,4 @@
-﻿using BackendGastos.Controller.DTOs.CategoriaGasto;
+﻿using BackendGastos.Service.DTOs.CategoriaGasto;
 using FluentValidation;
 using System;
 using System.Collections.Generic;

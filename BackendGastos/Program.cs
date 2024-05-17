@@ -1,15 +1,29 @@
+using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Service.Services;
+using BackendGastos.Validator.CategoriaIngreso;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Services
+builder.Services.AddScoped<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>, CategoriaIngresoService>();
+
+
+
+
+
+// Validators 
+builder.Services.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Services
-//builder.Services.AddScoped<ICategoriaIngersoService, CategoriaIngresoService>();
+
 
 var app = builder.Build();
 

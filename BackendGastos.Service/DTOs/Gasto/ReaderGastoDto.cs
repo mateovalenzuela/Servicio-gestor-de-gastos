@@ -1,12 +1,16 @@
-﻿namespace BackendGastos.Controller.DTOs.Gasto
+﻿namespace BackendGastos.Service.DTOs.Gasto
 {
-    public class GastoDto
+    public class ReaderGastoDto
     {
         public long Id { get; set; }
 
         public string Descripcion { get; set; } = null!;
 
         public decimal Importe { get; set; }
+
+        public DateTime FechaCreacion { get; set; }
+
+        public bool Baja { get; set; }
 
         public long CategoriaGastoId { get; set; }
 

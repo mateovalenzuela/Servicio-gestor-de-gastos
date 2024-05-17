@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BackendGastos.Controller.DTOs.CategoriaIngreso;
+using BackendGastos.Service.DTOs.CategoriaIngreso;
 using FluentValidation;
 
 namespace BackendGastos.Validator.CategoriaIngreso
 {
-    internal class CategoriaIngresoValidator : AbstractValidator<CategoriaIngresoDto>
+    public class CategoriaIngresoValidator : AbstractValidator<CategoriaIngresoDto>
     {
         public CategoriaIngresoValidator()
         {

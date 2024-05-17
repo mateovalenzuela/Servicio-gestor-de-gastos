@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    internal class MonedaRepository : IRepository<GastosMonedum>
+    public class MonedaRepository : IRepository<GastosMonedum>
     {
         private ProyectoGastosTestContext _context;
         public MonedaRepository(ProyectoGastosTestContext context)

@@ -1,4 +1,4 @@
-﻿using BackendGastos.Controller.DTOs.CategoriaIngreso;
+﻿using BackendGastos.Service.DTOs.CategoriaIngreso;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Validator.CategoriaIngreso
 {
-    internal class InsertUpdateCategoriaIngresoValidator : AbstractValidator<InsertUpdateCategoriaIngresoDto>
+    public class InsertUpdateCategoriaIngresoValidator : AbstractValidator<InsertUpdateCategoriaIngresoDto>
     {
         public InsertUpdateCategoriaIngresoValidator()
         {

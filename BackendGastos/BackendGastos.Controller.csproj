@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BackendGastos.Service\BackendGastos.Service.csproj" />
+    <ProjectReference Include="..\BackendGastos.Validator\BackendGastos.Validator.csproj" />
   </ItemGroup>
 
 </Project>
