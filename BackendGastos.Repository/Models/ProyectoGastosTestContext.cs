@@ -8,12 +8,6 @@ namespace BackendGastos.Repository.Models;
 
 public partial class ProyectoGastosTestContext : DbContext
 {
-    private readonly IConfiguration _configuration;
-    public ProyectoGastosTestContext(IConfiguration configuration)
-    {
-        _configuration = configuration;
-    }
-
     public ProyectoGastosTestContext(DbContextOptions<ProyectoGastosTestContext> options)
         : base(options)
     {
@@ -61,10 +55,6 @@ public partial class ProyectoGastosTestContext : DbContext
 
     public virtual DbSet<TokenBlacklistOutstandingtoken> TokenBlacklistOutstandingtokens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseNpgsql(_configuration.GetConnectionString("GastosDb"));
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

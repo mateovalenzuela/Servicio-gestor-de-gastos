@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BackendGastos.Repository\BackendGastos.Repository.csproj" />
     <ProjectReference Include="..\BackendGastos.Service\BackendGastos.Service.csproj" />
     <ProjectReference Include="..\BackendGastos.Validator\BackendGastos.Validator.csproj" />
   </ItemGroup>

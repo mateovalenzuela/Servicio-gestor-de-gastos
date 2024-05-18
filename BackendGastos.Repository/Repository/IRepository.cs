@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    internal interface IRepository<TEntity>
+    public interface IRepository<TEntity>
     {
     
         Task<IEnumerable<TEntity>> Get();

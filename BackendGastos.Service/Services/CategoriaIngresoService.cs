@@ -13,9 +13,9 @@ namespace BackendGastos.Service.Services
 {
     public class CategoriaIngresoService : ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>
     {
-        private CategoriaIngresoRepository _categoriaIngresoRepository;
+        private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
 
-        public CategoriaIngresoService(CategoriaIngresoRepository categoriaIngresoRepository)
+        public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository)
         {
             _categoriaIngresoRepository = categoriaIngresoRepository;
         }
@@ -105,6 +105,7 @@ namespace BackendGastos.Service.Services
                     Id = categoriaIngreso.Id,
                     Descripcion = categoriaIngreso.Descripcion
                 };
+                return categoriaDto;
             }
 
             return null;

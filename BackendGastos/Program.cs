@@ -1,21 +1,37 @@
+using BackendGastos.Repository.Models;
 using BackendGastos.Service.DTOs.CategoriaIngreso;
 using BackendGastos.Service.Services;
 using BackendGastos.Validator.CategoriaIngreso;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using BackendGastos.Repository.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
+// Entity Framework 
+builder.Services.AddDbContext<ProyectoGastosTestContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("GastosDb"));
+});
+
 // Services
 builder.Services.AddScoped<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>, CategoriaIngresoService>();
 
 
-
-
-
 // Validators 
 builder.Services.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
+builder.Services.AddScoped<IValidator<CategoriaIngresoDto>, CategoriaIngresoValidator>();
+
+
+// Repository
+builder.Services.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
+
+
+
+
 
 
 builder.Services.AddControllers();

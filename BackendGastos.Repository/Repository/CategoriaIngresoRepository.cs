@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public class CategoriaIngresoRepository : IRepository<GastosCategoriaigreso>
+    public class CategoriaIngresoRepository : ICategoriaIngresoRepository
     {
         private ProyectoGastosTestContext _context;
         public CategoriaIngresoRepository(ProyectoGastosTestContext context)
@@ -46,6 +46,9 @@ namespace BackendGastos.Repository.Repository
         public async Task<GastosCategoriaigreso> GetActiveById(long id)
         {
             var categoriaIngreso = await _context.GastosCategoriaigresos.FindAsync(id);
+
+            if (categoriaIngreso == null) return null;
+
             if (categoriaIngreso.Baja == false)
             {
                 return categoriaIngreso;

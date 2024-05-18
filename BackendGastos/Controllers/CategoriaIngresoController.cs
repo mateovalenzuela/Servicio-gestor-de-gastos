@@ -13,9 +13,9 @@ namespace BackendGastos.Controllers
     public class CategoriaIngresoController : ControllerBase
     {
 
-        private IValidator<CategoriaIngresoDto> _categoriaIngresoValidator;
-        private IValidator<InsertUpdateCategoriaIngresoDto> _insertUpdateCategoriaIngresoValidator;
-        private ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto> _categoriaIngresoService;
+        private readonly IValidator<CategoriaIngresoDto> _categoriaIngresoValidator;
+        private readonly IValidator<InsertUpdateCategoriaIngresoDto> _insertUpdateCategoriaIngresoValidator;
+        private readonly ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto> _categoriaIngresoService;
 
         public CategoriaIngresoController(IValidator<CategoriaIngresoDto> categoriaIngresoValidator,
             IValidator<InsertUpdateCategoriaIngresoDto> insertUpdateCategoriaIngresoValidator,
