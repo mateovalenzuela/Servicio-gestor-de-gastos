@@ -5,6 +5,8 @@ using BackendGastos.Validator.CategoriaIngreso;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using BackendGastos.Repository.Repository;
+using BackendGastos.Service.DTOs.CategoriaGasto;
+using BackendGastos.Validator.CategoriaGasto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,16 +21,19 @@ builder.Services.AddDbContext<ProyectoGastosTestContext>(options =>
 
 // Services
 builder.Services.AddScoped<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>, CategoriaIngresoService>();
+builder.Services.AddScoped<ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto>, CategoriaGastoService>();
 
 
 // Validators 
 builder.Services.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
 builder.Services.AddScoped<IValidator<CategoriaIngresoDto>, CategoriaIngresoValidator>();
+builder.Services.AddScoped<IValidator<InsertUpdateCategoriaGastoDto>, InsertUpdateCategoriaGastoValidator>();
+builder.Services.AddScoped<IValidator<CategoriaGastoDto>, CategoriaGastoValidator>();
 
 
 // Repository
 builder.Services.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
-
+builder.Services.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
 
 
 

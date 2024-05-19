@@ -9,7 +9,7 @@ using BackendGastos.Service.DTOs.CategoriaGasto;
 
 namespace BackendGastos.Validator.CategoriaGasto
 {
-    internal class CategoriaGastoValidator : AbstractValidator<CategoriaGastoDto>
+    public class CategoriaGastoValidator : AbstractValidator<CategoriaGastoDto>
     {
         public CategoriaGastoValidator()
         {
