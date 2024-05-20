@@ -6,38 +6,34 @@ using System.Text;
 using System.Threading.Tasks;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Repository.Models;
+using AutoMapper;
 
 namespace BackendGastos.Service.Services
 {
     public class CategoriaGastoService : ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto>
     {
         private readonly ICategoriaGastoRepository _categoriaGastoRepository;
+        private readonly IMapper _mapper;
 
-        public CategoriaGastoService(ICategoriaGastoRepository categoriaGastoRepository)
+        public CategoriaGastoService(ICategoriaGastoRepository categoriaGastoRepository, IMapper mapper)
         {
             _categoriaGastoRepository = categoriaGastoRepository;
+            _mapper = mapper;
         }
 
         public async Task<CategoriaGastoDto> Add(InsertUpdateCategoriaGastoDto insertUpdateDto)
         {
-            var categoriaGasto = new GastosCategoriagasto
-            {
-                Descripcion = insertUpdateDto.Descripcion,
-                FechaCreacion = DateTime.UtcNow
-            };
+            var categoriaGasto = _mapper.Map<GastosCategoriagasto>(insertUpdateDto);
+            categoriaGasto.FechaCreacion = DateTime.UtcNow;
 
             await _categoriaGastoRepository.Add(categoriaGasto);
             await _categoriaGastoRepository.Save();
 
-            var categoriaGastoDto = new CategoriaGastoDto
-            {
-                Id = categoriaGasto.Id,
-                Descripcion = categoriaGasto.Descripcion
-            };
+            var categoriaGastoDto = _mapper.Map<CategoriaGastoDto>(categoriaGasto);
             return categoriaGastoDto;
         }
 
-        public async Task<CategoriaGastoDto> Delete(long id)
+        public async Task<CategoriaGastoDto?> Delete(long id)
         {
             var categoriaGasto = await _categoriaGastoRepository.GetActiveById(id);
 
@@ -46,11 +42,7 @@ namespace BackendGastos.Service.Services
                 _categoriaGastoRepository.BajaLogica(categoriaGasto);
                 await _categoriaGastoRepository.Save();
 
-                var categoriaGastoDto = new CategoriaGastoDto
-                {
-                    Id = categoriaGasto.Id,
-                    Descripcion = categoriaGasto.Descripcion
-                };
+                var categoriaGastoDto = _mapper.Map<CategoriaGastoDto>(categoriaGasto);
 
                 return categoriaGastoDto;
             }
@@ -61,31 +53,23 @@ namespace BackendGastos.Service.Services
         {
             var categoriaGasto = await _categoriaGastoRepository.GetActive();
 
-            var categoriaGastoDtos = categoriaGasto.Select(c=> new CategoriaGastoDto
-            {
-                Id=c.Id,
-                Descripcion=c.Descripcion,
-            }).ToList();
+            var categoriaGastoDtos = categoriaGasto.Select(c=> _mapper.Map<CategoriaGastoDto>(c)).ToList();
             return categoriaGastoDtos;
         }
 
-        public async Task<CategoriaGastoDto> GetById(long id)
+        public async Task<CategoriaGastoDto?> GetById(long id)
         {
             var categoriaGasto = await _categoriaGastoRepository.GetActiveById(id);
 
             if (categoriaGasto != null)
             {
-                var categoriaGastoDto = new CategoriaGastoDto
-                {
-                    Id = categoriaGasto.Id,
-                    Descripcion = categoriaGasto.Descripcion
-                };
+                var categoriaGastoDto = _mapper.Map<CategoriaGastoDto>(categoriaGasto);
                 return categoriaGastoDto;
             }
             return null;
         }
 
-        public async Task<CategoriaGastoDto> Update(long id, InsertUpdateCategoriaGastoDto insertUpdateDto)
+        public async Task<CategoriaGastoDto?> Update(long id, InsertUpdateCategoriaGastoDto insertUpdateDto)
         {
             var categoriaGasto = await _categoriaGastoRepository.GetActiveById(id);
 
@@ -94,11 +78,7 @@ namespace BackendGastos.Service.Services
                 categoriaGasto.Descripcion = insertUpdateDto.Descripcion;
                 await _categoriaGastoRepository.Save();
 
-                var categoriaGastoDto = new CategoriaGastoDto
-                {
-                    Id = categoriaGasto.Id,
-                    Descripcion = categoriaGasto.Descripcion
-                };
+                var categoriaGastoDto = _mapper.Map<CategoriaGastoDto>(categoriaGasto);
                 return categoriaGastoDto;
             }
 
