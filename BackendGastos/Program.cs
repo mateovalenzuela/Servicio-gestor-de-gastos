@@ -6,6 +6,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.CategoriaGasto;
+using BackendGastos.Service.AutoMappers;
 using BackendGastos.Validator.CategoriaGasto;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,8 @@ builder.Services.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>(
 
 
 
+// AutoMappers
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 builder.Services.AddControllers();

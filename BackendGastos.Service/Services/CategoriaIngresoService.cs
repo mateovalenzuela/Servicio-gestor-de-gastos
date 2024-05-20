@@ -8,36 +8,32 @@ using System.Threading.Tasks;
 using System.Reflection.Metadata.Ecma335;
 using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace BackendGastos.Service.Services
 {
     public class CategoriaIngresoService : ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>
     {
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
+        private readonly IMapper _mapper;
 
-        public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository)
+        public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository, IMapper mapper)
         {
             _categoriaIngresoRepository = categoriaIngresoRepository;
+            _mapper = mapper;
         }
 
         public async Task<CategoriaIngresoDto> Add(InsertUpdateCategoriaIngresoDto insertUpadateCategoriaIngresoDto)
         {
-            var categoriaIngreso = new GastosCategoriaigreso
-            {
-                Descripcion = insertUpadateCategoriaIngresoDto.Descripcion,
-                FechaCreacion = DateTime.UtcNow
-            };
+            var categoriaIngreso = _mapper.Map<GastosCategoriaigreso>(insertUpadateCategoriaIngresoDto);
+            categoriaIngreso.FechaCreacion = DateTime.UtcNow;
 
 
             await _categoriaIngresoRepository.Add(categoriaIngreso);
             await _categoriaIngresoRepository.Save();
 
 
-            var categoriaDto = new CategoriaIngresoDto()
-            {
-                Id = categoriaIngreso.Id,
-                Descripcion = categoriaIngreso.Descripcion
-            };
+            var categoriaDto = _mapper.Map<CategoriaIngresoDto>(categoriaIngreso);
             return categoriaDto;
         }
 
@@ -50,11 +46,7 @@ namespace BackendGastos.Service.Services
                 _categoriaIngresoRepository.BajaLogica(categoriaIngreso);
                 await _categoriaIngresoRepository.Save();
 
-                var categoriaIngresoDto = new CategoriaIngresoDto
-                {
-                    Id = categoriaIngreso.Id,
-                    Descripcion = categoriaIngreso.Descripcion
-                };
+                var categoriaIngresoDto = _mapper.Map<CategoriaIngresoDto>(categoriaIngreso);
                 return categoriaIngresoDto;
             }
             return null;
@@ -64,11 +56,7 @@ namespace BackendGastos.Service.Services
         {
             var categoriaIngreso = await _categoriaIngresoRepository.GetActive();
 
-            var categoriaIngresoDtos = categoriaIngreso.Select(c => new CategoriaIngresoDto
-            {
-                Id = c.Id,
-                Descripcion = c.Descripcion,
-            }).ToList();
+            var categoriaIngresoDtos = categoriaIngreso.Select(c => _mapper.Map<CategoriaIngresoDto>(c)).ToList();
 
             return categoriaIngresoDtos;
         }
@@ -79,11 +67,7 @@ namespace BackendGastos.Service.Services
 
             if (categoriaIngreso != null)
             {
-                var categoriaIngresoDto = new CategoriaIngresoDto
-                {
-                    Id = categoriaIngreso.Id,
-                    Descripcion = categoriaIngreso.Descripcion,
-                };
+                var categoriaIngresoDto = _mapper.Map<CategoriaIngresoDto>(categoriaIngreso);
 
                 return categoriaIngresoDto;
             }
@@ -100,11 +84,7 @@ namespace BackendGastos.Service.Services
                 categoriaIngreso.Descripcion = inserUpdateCategoriaIngresoDto.Descripcion;
                 await _categoriaIngresoRepository.Save();
 
-                var categoriaDto = new CategoriaIngresoDto()
-                {
-                    Id = categoriaIngreso.Id,
-                    Descripcion = categoriaIngreso.Descripcion
-                };
+                var categoriaDto = _mapper.Map<CategoriaIngresoDto>(categoriaIngreso);
                 return categoriaDto;
             }
 
