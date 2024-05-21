@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public class MonedaRepository : IRepository<GastosMonedum>
+    public class MonedaRepository : IMonedaRepository
     {
         private ProyectoGastosTestContext _context;
         public MonedaRepository(ProyectoGastosTestContext context)
@@ -38,6 +38,9 @@ namespace BackendGastos.Repository.Repository
         public async Task<GastosMonedum> GetActiveById(long id)
         {
             var moneda = await _context.GastosMoneda.FindAsync(id);
+
+            if (moneda == null) return null;
+
             if (moneda.Baja == false)
             {
                 return moneda;
@@ -50,6 +53,9 @@ namespace BackendGastos.Repository.Repository
 
         public async Task Save()
             => await _context.SaveChangesAsync();
+
+        public IEnumerable<GastosMonedum> Search(Func<GastosMonedum, bool> filter)
+            => _context.GastosMoneda.Where(filter).ToList();
 
         public void Update(GastosMonedum entity)
         {

@@ -48,7 +48,12 @@ namespace BackendGastos.Controllers
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult);
+                return BadRequest(validationResult.Errors);
+            }
+
+            if (!_categoriaIngresoService.Validate(insertCategoriaIngresoDto))
+            {
+                return BadRequest(_categoriaIngresoService.Errors);
             }
 
             var categoriaIngresoDto = await _categoriaIngresoService.Add(insertCategoriaIngresoDto);
@@ -64,7 +69,12 @@ namespace BackendGastos.Controllers
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult);
+                return BadRequest(validationResult.Errors);
+            }
+
+            if (!_categoriaIngresoService.Validate(insertCategoriaIngresoDto, id))
+            {
+                return BadRequest(_categoriaIngresoService.Errors);
             }
 
             var categoriaIngresoDto = await _categoriaIngresoService.Update(id, insertCategoriaIngresoDto);  

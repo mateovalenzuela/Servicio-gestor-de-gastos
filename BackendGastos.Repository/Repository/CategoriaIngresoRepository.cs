@@ -73,5 +73,9 @@ namespace BackendGastos.Repository.Repository
             _context.GastosCategoriaigresos.Attach(categoriaIngreso);
             _context.GastosCategoriaigresos.Entry(categoriaIngreso).State = EntityState.Modified;
         }
+
+        public IEnumerable<GastosCategoriaigreso> Search(Func<GastosCategoriaigreso, bool> filter)
+            => _context.GastosCategoriaigresos.Where(filter).ToList();
+        
     }
 }

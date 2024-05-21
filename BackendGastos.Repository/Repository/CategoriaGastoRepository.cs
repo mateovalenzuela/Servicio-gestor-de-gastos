@@ -73,5 +73,8 @@ namespace BackendGastos.Repository.Repository
             _context.GastosCategoriagastos.Attach(categoriaGasto);
             _context.GastosCategoriagastos.Entry(categoriaGasto).State = EntityState.Modified;
         }
+
+        public IEnumerable<GastosCategoriagasto> Search(Func<GastosCategoriagasto, bool> filter)
+            => _context.GastosCategoriagastos.Where(filter).ToList();
     }
 }

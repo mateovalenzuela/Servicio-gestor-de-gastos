@@ -48,7 +48,12 @@ namespace BackendGastos.Controller.Controllers
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult);
+                return BadRequest(validationResult.Errors);
+            }
+
+            if (!_categoriaGastoService.Validate(insertUpdateCategoriaGasto))
+            {
+                return BadRequest(_categoriaGastoService.Errors);
             }
 
             var categoriaGastoDto = await _categoriaGastoService.Add(insertUpdateCategoriaGasto);
@@ -64,7 +69,12 @@ namespace BackendGastos.Controller.Controllers
 
             if (!validationResult.IsValid)
             {
-                return BadRequest(validationResult);
+                return BadRequest(validationResult.Errors);
+            }
+
+            if (!_categoriaGastoService.Validate(insertUpdateCategoriaGasto, id))
+            {
+                return BadRequest(_categoriaGastoService.Errors);
             }
 
             var categoriaGastoDto = await _categoriaGastoService.Update(id, insertUpdateCategoriaGasto);

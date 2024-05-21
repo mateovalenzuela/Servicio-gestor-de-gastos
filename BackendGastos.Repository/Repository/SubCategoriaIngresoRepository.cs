@@ -69,6 +69,9 @@ namespace BackendGastos.Repository.Repository
         public async Task<GastosSubcategoriaingreso> GetActiveById(long id)
         {
             var subCategoriaIngreso = await _context.GastosSubcategoriaingresos.FindAsync(id);
+
+            if (subCategoriaIngreso == null) return null;
+
             if (subCategoriaIngreso.Baja == false)
             {
                 return subCategoriaIngreso;
@@ -93,5 +96,8 @@ namespace BackendGastos.Repository.Repository
             _context.GastosSubcategoriaingresos.Attach(subCategoriaIngreso);
             _context.GastosSubcategoriaingresos.Entry(subCategoriaIngreso).State = EntityState.Modified;
         }
+
+        public IEnumerable<GastosSubcategoriaingreso> Search(Func<GastosSubcategoriaingreso, bool> filter)
+            => _context.GastosSubcategoriaingresos.Where(filter).ToList();
     }
 }

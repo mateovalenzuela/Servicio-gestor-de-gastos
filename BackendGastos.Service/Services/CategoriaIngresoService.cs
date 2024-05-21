@@ -9,6 +9,7 @@ using System.Reflection.Metadata.Ecma335;
 using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using BackendGastos.Service.DTOs.CategoriaGasto;
 
 namespace BackendGastos.Service.Services
 {
@@ -16,12 +17,16 @@ namespace BackendGastos.Service.Services
     {
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
         private readonly IMapper _mapper;
+        public List<string> Errors { get; }
 
         public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository, IMapper mapper)
         {
             _categoriaIngresoRepository = categoriaIngresoRepository;
             _mapper = mapper;
+            Errors = new List<string>();
         }
+
+        
 
         public async Task<CategoriaIngresoDto> Add(InsertUpdateCategoriaIngresoDto insertUpadateCategoriaIngresoDto)
         {
@@ -91,6 +96,25 @@ namespace BackendGastos.Service.Services
             return null;
         }
 
+        public bool Validate(InsertUpdateCategoriaIngresoDto insertUpdateDto, long id)
+        {
+            if (_categoriaIngresoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion &&
+                                                      id != c.Id).Count() > 0)
+            {
+                Errors.Add("La categoria ya existe");
+                return false;
+            }
+            return true;
+        }
 
+        public bool Validate(InsertUpdateCategoriaIngresoDto insertUpdateDto)
+        {
+            if (_categoriaIngresoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
+            {
+                Errors.Add("La categoria ya existe");
+                return false;
+            }
+            return true;
+        }
     }
 }

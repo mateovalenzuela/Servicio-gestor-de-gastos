@@ -14,11 +14,13 @@ namespace BackendGastos.Service.Services
     {
         private readonly ICategoriaGastoRepository _categoriaGastoRepository;
         private readonly IMapper _mapper;
+        public List<string> Errors { get; }
 
         public CategoriaGastoService(ICategoriaGastoRepository categoriaGastoRepository, IMapper mapper)
         {
             _categoriaGastoRepository = categoriaGastoRepository;
             _mapper = mapper;
+            Errors = new List<string>();
         }
 
         public async Task<CategoriaGastoDto> Add(InsertUpdateCategoriaGastoDto insertUpdateDto)
@@ -83,6 +85,27 @@ namespace BackendGastos.Service.Services
             }
 
             return null;
+        }
+
+        public bool Validate(InsertUpdateCategoriaGastoDto insertUpdateDto, long id)
+        {
+            if (_categoriaGastoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion &&
+                                                      id != c.Id).Count() > 0)
+            {
+                Errors.Add("La categoria ya existe");
+                return false;
+            }
+            return true;
+        }
+
+        public bool Validate(InsertUpdateCategoriaGastoDto insertUpdateDto)
+        {
+            if (_categoriaGastoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion).Count() > 0 )
+            {
+                Errors.Add("La categoria ya existe");
+                return false;
+            }
+            return true;
         }
     }
 }

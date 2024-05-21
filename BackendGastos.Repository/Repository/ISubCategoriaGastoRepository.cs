@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendGastos.Repository.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,8 @@ namespace BackendGastos.Repository.Repository
         Task<IEnumerable<TEntity>> GetActiveByUserAndCategoriaGasto(long idUser, long idCategoriaGasto);
 
         Task<IEnumerable<TEntity>> GetActiveByCategoriaGasto(long idCategoriaGasto);
+
+        IEnumerable<TEntity> Search(Func<TEntity, bool> filter);
+
     }
 }

@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public interface ICategoriaIngresoRepository : IRepository<GastosCategoriaigreso>
+    internal interface IMonedaRepository : IRepository<GastosMonedum>
     {
-        IEnumerable<GastosCategoriaigreso> Search(Func<GastosCategoriaigreso, bool> filter);
+        IEnumerable<GastosMonedum> Search(Func<GastosMonedum, bool> filter);
+
     }
 }
