@@ -14,11 +14,11 @@ namespace BackendGastos.Controller.Controllers
 
         private readonly IValidator<CategoriaGastoDto> _categoriaGastoValidator;
         private readonly IValidator<InsertUpdateCategoriaGastoDto> _insertUpdateCategoriaGastoValidator;
-        private readonly ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto> _categoriaGastoService;
+        private readonly ICategoriaGastoService _categoriaGastoService;
 
         public CategoriaGastoController(IValidator<CategoriaGastoDto> categoriaGastoValidator, 
             IValidator<InsertUpdateCategoriaGastoDto> insertUpdateCategoriaGastoValidator, 
-            ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto> categoriaGastoService)
+            ICategoriaGastoService categoriaGastoService)
         {
             _categoriaGastoValidator = categoriaGastoValidator;
             _insertUpdateCategoriaGastoValidator = insertUpdateCategoriaGastoValidator;

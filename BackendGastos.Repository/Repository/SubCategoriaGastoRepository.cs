@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public class SubCategoriaGastoRepository : ISubCategoriaGastoRepository<GastosSubcategoriagasto>
+    public class SubCategoriaGastoRepository : ISubCategoriaGastoRepository
     {
         private ProyectoGastosTestContext _context;
         public SubCategoriaGastoRepository(ProyectoGastosTestContext context)
@@ -23,6 +23,32 @@ namespace BackendGastos.Repository.Repository
         public void Delete(GastosSubcategoriagasto subCategoriaGasto)
         {
             _context.GastosSubcategoriagastos.Remove(subCategoriaGasto);
+        }
+
+        public async Task<GastosCategoriagasto> GetCategoriaGastoById(long id)
+        {
+            var categoriaGastos = await _context.GastosCategoriagastos.FindAsync(id);
+            if (categoriaGastos == null) return null;
+
+            if (categoriaGastos.Baja == false)
+            {
+                return categoriaGastos;
+            }
+
+            return null;
+        }
+
+        public async Task<AuthenticationUsuario> GetUsuarioById(long id)
+        {
+            var user = await _context.AuthenticationUsuarios.FindAsync(id);
+            if (user == null) return null;
+
+            if (user.IsActive == true)
+            {
+                return user;
+            }
+
+            return null;
         }
 
         public async Task<IEnumerable<GastosSubcategoriagasto>> Get()

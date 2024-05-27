@@ -10,7 +10,7 @@ using AutoMapper;
 
 namespace BackendGastos.Service.Services
 {
-    public class CategoriaGastoService : ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto>
+    public class CategoriaGastoService : ICategoriaGastoService
     {
         private readonly ICategoriaGastoRepository _categoriaGastoRepository;
         private readonly IMapper _mapper;

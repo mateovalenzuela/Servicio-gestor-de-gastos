@@ -8,6 +8,10 @@ using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.AutoMappers;
 using BackendGastos.Validator.CategoriaGasto;
+using BackendGastos.Service.DTOs.SubCategoriaIngreso;
+using BackendGastos.Validator.SubCategoriaIngreso;
+using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Validator.SubCategoriaGasto;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,20 +25,31 @@ builder.Services.AddDbContext<ProyectoGastosTestContext>(options =>
 });
 
 // Services
-builder.Services.AddScoped<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>, CategoriaIngresoService>();
-builder.Services.AddScoped<ICommonService<CategoriaGastoDto, InsertUpdateCategoriaGastoDto>, CategoriaGastoService>();
+builder.Services.AddScoped<ICategoriaIngresoService, CategoriaIngresoService>();
+builder.Services.AddScoped<ICategoriaGastoService, CategoriaGastoService>();
+builder.Services.AddScoped<ISubCategoriaIngresoService, SubCategoriaIngresoService>();
+builder.Services.AddScoped<ISubCategoriaGastoService, SubCategoriaGastoService>();
 
 
 // Validators 
 builder.Services.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
 builder.Services.AddScoped<IValidator<CategoriaIngresoDto>, CategoriaIngresoValidator>();
+
 builder.Services.AddScoped<IValidator<InsertUpdateCategoriaGastoDto>, InsertUpdateCategoriaGastoValidator>();
 builder.Services.AddScoped<IValidator<CategoriaGastoDto>, CategoriaGastoValidator>();
+
+builder.Services.AddScoped<IValidator<InsertUpdateSubCategoriaIngresoDto>, InsertUpdateSubCategoriaIngresoValidator>();
+builder.Services.AddScoped<IValidator<SubCategoriaIngresoDto>, SubCategoriaIngresoValidator>();
+
+builder.Services.AddScoped<IValidator<InsertUpdateSubCategoriaGastoDto>, InsertUpdateSubCategoriaGastoValidator>();
+builder.Services.AddScoped<IValidator<SubCategoriaGastoDto>, SubCategoriaGastoValidator>();
 
 
 // Repository
 builder.Services.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
 builder.Services.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
+builder.Services.AddScoped<ISubCategoriaIngresoRepository,  SubCategoriaIngresoRepository>();
+builder.Services.AddScoped< ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
 
 
 

@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public class SubCategoriaIngresoRepository : ISubCategoriaIngresoRepository<GastosSubcategoriaingreso>
+    public class SubCategoriaIngresoRepository : ISubCategoriaIngresoRepository
     {
         private ProyectoGastosTestContext _context;
+        
         public SubCategoriaIngresoRepository(ProyectoGastosTestContext context)
         {
             _context = context;
@@ -29,6 +30,32 @@ namespace BackendGastos.Repository.Repository
         {
             var subCategoriasIngreso = await _context.GastosSubcategoriaingresos.ToListAsync();
             return subCategoriasIngreso;
+        }
+
+        public async Task<GastosCategoriaigreso> GetCategoriaIngresoById(long id)
+        {
+            var categoriaIngresos = await _context.GastosCategoriaigresos.FindAsync(id);
+            if (categoriaIngresos == null) return null;
+
+            if (categoriaIngresos.Baja == false)
+            {
+                return categoriaIngresos;
+            }
+
+            return null;
+        }
+
+        public async Task<AuthenticationUsuario> GetUsuarioById(long id)
+        {
+            var user = await _context.AuthenticationUsuarios.FindAsync(id);
+            if (user == null) return null;
+
+            if (user.IsActive == true)
+            {
+                return user;
+            }
+
+            return null;
         }
 
         public async Task<IEnumerable<GastosSubcategoriaingreso>> GetActive()

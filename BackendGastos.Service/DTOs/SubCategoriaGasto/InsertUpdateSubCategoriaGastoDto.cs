@@ -5,5 +5,7 @@
         public string Descripcion { get; set; }
 
         public long CategoriaGastoId { get; set; }
+
+        public long UsuarioId { get; set; }
     }
 }

@@ -13,7 +13,7 @@ using BackendGastos.Service.DTOs.CategoriaGasto;
 
 namespace BackendGastos.Service.Services
 {
-    public class CategoriaIngresoService : ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>
+    public class CategoriaIngresoService : ICategoriaIngresoService
     {
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
         private readonly IMapper _mapper;

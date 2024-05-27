@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Validator.SubCategoriaGasto
 {
-    internal class InsertUpdateSubCategoriaGastoValidator : AbstractValidator<InsertUpdateSubCategoriaGastoDto>
+    public class InsertUpdateSubCategoriaGastoValidator : AbstractValidator<InsertUpdateSubCategoriaGastoDto>
     {
         public InsertUpdateSubCategoriaGastoValidator()
         {

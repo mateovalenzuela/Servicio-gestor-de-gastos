@@ -7,16 +7,19 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    internal interface ISubCategoriaIngresoRepository<TEntity> : IRepository<TEntity>
+    public interface ISubCategoriaIngresoRepository : IRepository<GastosSubcategoriaingreso>
     {
 
-        Task<IEnumerable<TEntity>> GetActiveByUser(long idUser);
+        Task<IEnumerable<GastosSubcategoriaingreso>> GetActiveByUser(long idUser);
 
-        Task<IEnumerable<TEntity>> GetActiveByUserAndCategoriaIngreso(long idUser, long idCategoriaIngreso);
+        Task<IEnumerable<GastosSubcategoriaingreso>> GetActiveByUserAndCategoriaIngreso(long idUser, long idSubCategoriaIngreso);
 
-        Task<IEnumerable<TEntity>> GetActiveByCategoriaIngreso(long idCategoriaIngreso);
+        Task<IEnumerable<GastosSubcategoriaingreso>> GetActiveByCategoriaIngreso(long idSubCategoriaIngreso);
 
-        IEnumerable<TEntity> Search(Func<TEntity, bool> filter);
+        Task<GastosCategoriaigreso> GetCategoriaIngresoById(long idCategoriaIngreso);
+        Task<AuthenticationUsuario> GetUsuarioById(long idUser);
+
+        IEnumerable<GastosSubcategoriaingreso> Search(Func<GastosSubcategoriaingreso, bool> filter);
 
     }
 }

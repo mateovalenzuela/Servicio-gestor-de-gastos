@@ -4,6 +4,9 @@
     {
         public string Descripcion { get; set; }
 
-        public long CagoriaIngresoId { get; set; }
+        public long CategoriaIngresoId { get; set; }
+
+        public long UsuarioId { get; set; }
+
     }
 }

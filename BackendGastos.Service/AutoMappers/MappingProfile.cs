@@ -2,6 +2,8 @@
 using BackendGastos.Repository.Models;
 using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,12 @@ namespace BackendGastos.Service.AutoMappers
             // CategoriaGasto
             CreateMap<InsertUpdateCategoriaGastoDto, GastosCategoriagasto>();
             CreateMap<GastosCategoriagasto, CategoriaGastoDto>();
+            // SubCategoriaIngreso
+            CreateMap<InsertUpdateSubCategoriaIngresoDto, GastosSubcategoriaingreso>();
+            CreateMap<GastosSubcategoriaingreso, SubCategoriaIngresoDto>();
+            // SubCategoriaGasto
+            CreateMap<InsertUpdateSubCategoriaGastoDto, GastosSubcategoriagasto>();
+            CreateMap<GastosSubcategoriagasto, SubCategoriaGastoDto>();
         }
     }
 }

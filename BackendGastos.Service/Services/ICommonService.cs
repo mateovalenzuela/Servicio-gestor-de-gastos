@@ -15,7 +15,6 @@ namespace BackendGastos.Service.Services
         Task<TDto> Add(InsertUpdateTDto insertUpdateDto);
         Task<TDto?> Update(long id, InsertUpdateTDto insertUpdateDto);
         Task<TDto?> Delete(long id);
-        public bool Validate(InsertUpdateTDto insertUpdateDto, long id);
-        public bool Validate(InsertUpdateTDto insertUpdateDto);
+        
     }
 }
