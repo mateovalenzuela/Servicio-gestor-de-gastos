@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BackendGastos.Service.DTOs.SubCategoriaIngreso;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BackendGastos.Test
 {
@@ -21,6 +22,8 @@ namespace BackendGastos.Test
         private readonly Mock<ISubCategoriaGastoService> _mockSubCategoriaGastoService;
         private readonly SubCategoriaGastoController _controller;
 
+        private readonly ServiceProvider _serviceProvider;
+
         public SubCategoriaGastoTest()
         {
             _mockSubCategoriaGastoValidator = new Mock<IValidator<SubCategoriaGastoDto>>();
@@ -30,12 +33,15 @@ namespace BackendGastos.Test
                 _mockSubCategoriaGastoValidator.Object,
                 _mockInsertUpdateSubCategoriaGastoValidator.Object,
                 _mockSubCategoriaGastoService.Object);
+            _serviceProvider = ProgramTest.GetServices(false);
         }
 
         [Fact]
         public async Task Get_ReturnsSubCategoriaGastoDtoList()
         {
             // Arrange
+            var servicioNecesario = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
+
             var subCategorias = new List<SubCategoriaGastoDto> { new() { Id = 1, Descripcion = "Test" } };
             _mockSubCategoriaGastoService.Setup(s => s.Get()).ReturnsAsync(subCategorias);
 
