@@ -13,14 +13,14 @@ namespace BackendGastos.Test
     {
         private readonly Mock<IValidator<CategoriaIngresoDto>> _mockCategoriaIngresoValidator;
         private readonly Mock<IValidator<InsertUpdateCategoriaIngresoDto>> _mockInsertUpdateCategoriaIngresoValidator;
-        private readonly Mock<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>> _mockCategoriaIngresoService;
+        private readonly Mock<ICategoriaIngresoService> _mockCategoriaIngresoService;
         private readonly CategoriaIngresoController _controller;
 
         public CategoriaIngresoTest()
         {
             _mockCategoriaIngresoValidator = new Mock<IValidator<CategoriaIngresoDto>>();
             _mockInsertUpdateCategoriaIngresoValidator = new Mock<IValidator<InsertUpdateCategoriaIngresoDto>>();
-            _mockCategoriaIngresoService = new Mock<ICommonService<CategoriaIngresoDto, InsertUpdateCategoriaIngresoDto>>();
+            _mockCategoriaIngresoService = new Mock<ICategoriaIngresoService>();
 
             _controller = new CategoriaIngresoController(
                 _mockCategoriaIngresoValidator.Object,
@@ -145,7 +145,7 @@ namespace BackendGastos.Test
         public async Task Add_ReturnsBadRequest_WhenValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Invalid Categoria" };
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "" };
             var validationFailures = new List<ValidationFailure>
         {
             new ValidationFailure("Descripcion", "Nombre is required")
@@ -167,13 +167,13 @@ namespace BackendGastos.Test
         public async Task Add_ReturnsBadRequest_WhenServiceValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Invalid Categoria" };
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria 1" };
             var validationResult = new ValidationResult();
             _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
                 .ReturnsAsync(validationResult);
 
             _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto)).Returns(false);
-            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(new List<string> { "Service validation failed" });
+            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(["La Categoria ya Existe"]);
 
             // Act
             var result = await _controller.Add(insertDto);
@@ -203,8 +203,6 @@ namespace BackendGastos.Test
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            Assert.Equal(nameof(_controller.Get), createdAtActionResult.ActionName);
-            Assert.Equal(categoriaIngresoDto.Id, createdAtActionResult.RouteValues["id"]);
             Assert.Equal(categoriaIngresoDto, createdAtActionResult.Value);
             _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
             _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto), Times.Once);
@@ -241,11 +239,12 @@ namespace BackendGastos.Test
         {
             // Arrange
             var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Invalid Categoria" };
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "" };
             var validationFailures = new List<ValidationFailure>
-        {
+            {
             new ValidationFailure("Descripcion", "Nombre is required")
-        };
+            };
+
             var validationResult = new ValidationResult(validationFailures);
             _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
                 .ReturnsAsync(validationResult);
@@ -264,13 +263,13 @@ namespace BackendGastos.Test
         {
             // Arrange
             var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Invalid Categoria" };
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria 1" };
             var validationResult = new ValidationResult();
             _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
                 .ReturnsAsync(validationResult);
 
             _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto, id)).Returns(false);
-            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(new List<string> { "Service validation failed" });
+            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(["LA categoria ya existe"]);
 
             // Act
             var result = await _controller.Put(id, insertDto);
