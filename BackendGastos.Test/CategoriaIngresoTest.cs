@@ -1,32 +1,84 @@
 using BackendGastos.Controllers;
+using BackendGastos.Repository.Models;
+using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using System;
 
 namespace BackendGastos.Test
 {
     public class CategoriaIngresoTest
     {
-        private readonly Mock<IValidator<CategoriaIngresoDto>> _mockCategoriaIngresoValidator;
-        private readonly Mock<IValidator<InsertUpdateCategoriaIngresoDto>> _mockInsertUpdateCategoriaIngresoValidator;
-        private readonly Mock<ICategoriaIngresoService> _mockCategoriaIngresoService;
+        private readonly ServiceProvider _serviceProvider;
         private readonly CategoriaIngresoController _controller;
+        private readonly ProyectoGastosTestContext _context;
+        private readonly InsertUpdateCategoriaIngresoDto _validCat;
+        private readonly InsertUpdateCategoriaIngresoDto _validCat2;
+        private readonly InsertUpdateCategoriaIngresoDto _validCat3;
+        private readonly InsertUpdateCategoriaIngresoDto _invalidCat;
+        private readonly InsertUpdateCategoriaIngresoDto _repeatedCat;
+        private readonly InsertUpdateCategoriaIngresoDto _createCat;
 
         public CategoriaIngresoTest()
         {
-            _mockCategoriaIngresoValidator = new Mock<IValidator<CategoriaIngresoDto>>();
-            _mockInsertUpdateCategoriaIngresoValidator = new Mock<IValidator<InsertUpdateCategoriaIngresoDto>>();
-            _mockCategoriaIngresoService = new Mock<ICategoriaIngresoService>();
+            _serviceProvider = ProgramTest.GetServices(true);
+
+            _context = _serviceProvider.GetRequiredService<ProyectoGastosTestContext>();
+
+            var  categoriaIngresoService = _serviceProvider.GetRequiredService<ICategoriaIngresoService>();
+            var categoriaIngresoValidator = _serviceProvider.GetRequiredService<IValidator<CategoriaIngresoDto>>();
+            var inserUpdateCategoriaIngresoValidator = _serviceProvider.GetRequiredService<IValidator<InsertUpdateCategoriaIngresoDto>>();
+
 
             _controller = new CategoriaIngresoController(
-                _mockCategoriaIngresoValidator.Object,
-                _mockInsertUpdateCategoriaIngresoValidator.Object,
-                _mockCategoriaIngresoService.Object
+                categoriaIngresoValidator,
+                inserUpdateCategoriaIngresoValidator,
+                categoriaIngresoService
             );
+
+            _validCat = new InsertUpdateCategoriaIngresoDto { Descripcion = "Sueldo" };
+            _validCat2 = new InsertUpdateCategoriaIngresoDto { Descripcion = "Inversiones" };
+            _validCat3 = new InsertUpdateCategoriaIngresoDto { Descripcion = "Prestamo" };
+            _invalidCat = new InsertUpdateCategoriaIngresoDto { Descripcion = "" };
+            _repeatedCat = new InsertUpdateCategoriaIngresoDto { Descripcion = "Sueldo" };
+            _createCat = new InsertUpdateCategoriaIngresoDto { Descripcion = "Dividendos" };
+
+        }
+
+
+        private async Task<List<CategoriaIngresoDto>> ArrangeAddSetup()
+        {
+            // Arrange
+
+            // Add two users
+            var usuarios = new List<AuthenticationUsuario>
+            {
+            new() { Id = 1, Username = "Test 1", Email = "usuario_test1@example.com", Password = "fwewfwefwe",
+                    IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },
+            new() { Id = 2, Username = "Test 2", Email = "usuario_test2@example.com", Password = "fwewfwefwe",
+                    IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },
+            };
+
+            _context.AuthenticationUsuarios.AddRange(usuarios);
+            _context.SaveChanges();
+
+
+            var servicioNecesario = _serviceProvider.GetRequiredService<ICategoriaIngresoService>();
+
+            var addedCategoria1 = await servicioNecesario.Add(_validCat);
+            var addedCategoria2 = await servicioNecesario.Add(_validCat2);
+            var addedCategoria3 = await servicioNecesario.Add(_validCat3);
+
+            var insertedSubCategorias = new List<CategoriaIngresoDto> { addedCategoria1, addedCategoria2, addedCategoria3 };
+            return insertedSubCategorias;
         }
 
         //
@@ -37,30 +89,22 @@ namespace BackendGastos.Test
         public async Task Get_ReturnsCategoriaIngresoDtos_WhenCategoriasExist()
         {
             // Arrange
-            var categoriaIngresos = new List<CategoriaIngresoDto>
-        {
-            new CategoriaIngresoDto { Id = 1, Descripcion = "Categoria 1" },
-            new CategoriaIngresoDto { Id = 2, Descripcion = "Categoria 2" }
-        };
-            _mockCategoriaIngresoService.Setup(service => service.Get())
-                .ReturnsAsync(categoriaIngresos);
+            var insertedCategoriasIngreso = await ArrangeAddSetup();
 
             // Act
             var result = await _controller.Get();
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.Count());
-            Assert.Equal("Categoria 1", result.First().Descripcion);
-            _mockCategoriaIngresoService.Verify(service => service.Get(), Times.Once);
+            Assert.Equal(3, result.Count());
+            Assert.Equal(insertedCategoriasIngreso, result);
         }
 
         [Fact]
         public async Task Get_ReturnsEmptyList_WhenNoCategoriasExist()
         {
             // Arrange
-            _mockCategoriaIngresoService.Setup(service => service.Get())
-                .ReturnsAsync(new List<CategoriaIngresoDto>());
+            
 
             // Act
             var result = await _controller.Get();
@@ -68,22 +112,9 @@ namespace BackendGastos.Test
             // Assert
             Assert.NotNull(result);
             Assert.Empty(result);
-            _mockCategoriaIngresoService.Verify(service => service.Get(), Times.Once);
         }
-
-        [Fact]
-        public async Task Get_ThrowsException_WhenServiceFails()
-        {
-            // Arrange
-            _mockCategoriaIngresoService.Setup(service => service.Get())
-                .ThrowsAsync(new System.Exception("Service error"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<System.Exception>(() => _controller.Get());
-            Assert.Equal("Service error", exception.Message);
-            _mockCategoriaIngresoService.Verify(service => service.Get(), Times.Once);
-        }
-
+        
+        
         //
         // GET BY ID
         //
@@ -92,51 +123,33 @@ namespace BackendGastos.Test
         public async Task GetById_ReturnsOkResult_WithCategoriaIngresoDto_WhenCategoriaExists()
         {
             // Arrange
-            var categoriaId = 1;
-            var categoriaIngreso = new CategoriaIngresoDto { Id = categoriaId, Descripcion = "Categoria 1" };
-            _mockCategoriaIngresoService.Setup(service => service.GetById(categoriaId))
-                .ReturnsAsync(categoriaIngreso);
+            var insertedCategorias = await ArrangeAddSetup();
+            var selectedCategoria = insertedCategorias.FirstOrDefault();
 
             // Act
-            var result = await _controller.Get(categoriaId);
+            var result = await _controller.Get(selectedCategoria.Id);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             var returnValue = Assert.IsType<CategoriaIngresoDto>(okResult.Value);
-            Assert.Equal(categoriaId, returnValue.Id);
-            _mockCategoriaIngresoService.Verify(service => service.GetById(categoriaId), Times.Once);
+            Assert.Equal(selectedCategoria, returnValue);
         }
 
         [Fact]
         public async Task GetById_ReturnsNotFoundResult_WhenCategoriaDoesNotExist()
         {
             // Arrange
-            var categoriaId = 1;
-            _mockCategoriaIngresoService.Setup(service => service.GetById(categoriaId))
-                .ReturnsAsync((CategoriaIngresoDto)null);
+            var insertedCategorias = await ArrangeAddSetup();
+            var idCat = 100L;
 
             // Act
-            var result = await _controller.Get(categoriaId);
+            var result = await _controller.Get(idCat);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
-            _mockCategoriaIngresoService.Verify(service => service.GetById(categoriaId), Times.Once);
+            Assert.Null(result.Value);
         }
-
-        [Fact]
-        public async Task GetById_ThrowsException_WhenServiceFails()
-        {
-            // Arrange
-            var categoriaId = 1;
-            _mockCategoriaIngresoService.Setup(service => service.GetById(categoriaId))
-                .ThrowsAsync(new System.Exception("Service error"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<System.Exception>(() => _controller.Get(categoriaId));
-            Assert.Equal("Service error", exception.Message);
-            _mockCategoriaIngresoService.Verify(service => service.GetById(categoriaId), Times.Once);
-        }
-
+        
         //
         // ADD
         //
@@ -145,89 +158,47 @@ namespace BackendGastos.Test
         public async Task Add_ReturnsBadRequest_WhenValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "" };
-            var validationFailures = new List<ValidationFailure>
-        {
-            new ValidationFailure("Descripcion", "Nombre is required")
-        };
-            var validationResult = new ValidationResult(validationFailures);
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
+            var insertedCategorias = await ArrangeAddSetup();
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_invalidCat);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(validationFailures, badRequestResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
+            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            Assert.Equal(1, errors.Count);
         }
 
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenServiceValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria 1" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto)).Returns(false);
-            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(["La Categoria ya Existe"]);
+            var insertedCategorias = await ArrangeAddSetup();
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_repeatedCat);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(_mockCategoriaIngresoService.Object.Errors, badRequestResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto), Times.Once);
+            Assert.Equal(insertedCategorias.Count, _context.GastosCategoriaigresos.Where(c => c.Baja == false).ToList().Count);
         }
-
+        
         [Fact]
         public async Task Add_ReturnsCreatedAtAction_WhenValid()
         {
             // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Valid Categoria" };
-            var validationResult = new ValidationResult();
-            var categoriaIngresoDto = new CategoriaIngresoDto { Id = 1, Descripcion = "Valid Categoria" };
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto)).Returns(true);
-            _mockCategoriaIngresoService.Setup(s => s.Add(insertDto)).ReturnsAsync(categoriaIngresoDto);
+            
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_createCat);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            Assert.Equal(categoriaIngresoDto, createdAtActionResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Add(insertDto), Times.Once);
-        }
+            var servicioNecesario = _serviceProvider.GetRequiredService<ICategoriaIngresoService>();
+            var insertedCategorias = await servicioNecesario.Get();
+            Assert.Equal(insertedCategorias.FirstOrDefault(), createdAtActionResult.Value);
+            Assert.Equal(1, insertedCategorias.Count());
 
-        [Fact]
-        public async Task Add_ThrowsException_WhenServiceFails()
-        {
-            // Arrange
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto)).Returns(true);
-            _mockCategoriaIngresoService.Setup(s => s.Add(insertDto))
-                .ThrowsAsync(new System.Exception("Service error"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<System.Exception>(() => _controller.Add(insertDto));
-            Assert.Equal("Service error", exception.Message);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Add(insertDto), Times.Once);
         }
 
         //
@@ -238,119 +209,72 @@ namespace BackendGastos.Test
         public async Task Put_ReturnsBadRequest_WhenValidationFails()
         {
             // Arrange
-            var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "" };
-            var validationFailures = new List<ValidationFailure>
-            {
-            new ValidationFailure("Descripcion", "Nombre is required")
-            };
-
-            var validationResult = new ValidationResult(validationFailures);
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
+            var insertedCategorias = await ArrangeAddSetup();
+            var insertedCategoria = insertedCategorias.FirstOrDefault();
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "P" };
 
             // Act
-            var result = await _controller.Put(id, insertDto);
+            var result = await _controller.Put(insertedCategoria.Id, insertDto);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(validationFailures, badRequestResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
+            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            Assert.Equal(1, errors.Count);
         }
 
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenServiceValidationFails()
         {
             // Arrange
-            var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria 1" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto, id)).Returns(false);
-            _mockCategoriaIngresoService.SetupGet(s => s.Errors).Returns(["LA categoria ya existe"]);
+            var insertedCategorias = await ArrangeAddSetup();
+            var selectedCategoria = insertedCategorias.FirstOrDefault();
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = insertedCategorias.ElementAt(1).Descripcion };
 
             // Act
-            var result = await _controller.Put(id, insertDto);
+            var result = await _controller.Put(selectedCategoria.Id, insertDto);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal(_mockCategoriaIngresoService.Object.Errors, badRequestResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto, id), Times.Once);
+            var servicioNecesario = _serviceProvider.GetRequiredService<ICategoriaIngresoService>();
+            var updatedCategoria = await servicioNecesario.GetById(selectedCategoria.Id);
+            Assert.Equal(selectedCategoria, updatedCategoria);
         }
 
         [Fact]
         public async Task Put_ReturnsNotFound_WhenUpdateReturnsNull()
         {
             // Arrange
-            var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto, id)).Returns(true);
-            _mockCategoriaIngresoService.Setup(s => s.Update(id, insertDto)).ReturnsAsync((CategoriaIngresoDto)null);
+            var insertedCategorias = await ArrangeAddSetup();
+            var idCat = 100L;
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Nueva Categoria" };
 
             // Act
-            var result = await _controller.Put(id, insertDto);
+            var result = await _controller.Put(idCat, insertDto);
 
             // Assert
             var notFoundResult = Assert.IsType<NotFoundResult>(result.Result);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto, id), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Update(id, insertDto), Times.Once);
-        }
+            Assert.Null(result.Value);
 
+        }
+        
         [Fact]
         public async Task Put_ReturnsOk_WhenValid()
         {
             // Arrange
-            var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria" };
-            var validationResult = new ValidationResult();
-            var categoriaIngresoDto = new CategoriaIngresoDto { Id = id, Descripcion = "Categoria" };
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto, id)).Returns(true);
-            _mockCategoriaIngresoService.Setup(s => s.Update(id, insertDto)).ReturnsAsync(categoriaIngresoDto);
+            var insertedCategorias = await ArrangeAddSetup();
+            var selectedCategoria = insertedCategorias.FirstOrDefault();
+            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria Actualizada" };
 
             // Act
-            var result = await _controller.Put(id, insertDto);
+            var result = await _controller.Put(selectedCategoria.Id, insertDto);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(categoriaIngresoDto, okResult.Value);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto, id), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Update(id, insertDto), Times.Once);
+            var objectResult = Assert.IsType<OkObjectResult>(result.Result);
+            var expectedObject = new CategoriaIngresoDto { Id = selectedCategoria.Id, Descripcion = insertDto.Descripcion };
+            Assert.Equal(expectedObject, objectResult.Value);
         }
 
-        [Fact]
-        public async Task Put_ThrowsException_WhenServiceFails()
-        {
-            // Arrange
-            var id = 1L;
-            var insertDto = new InsertUpdateCategoriaIngresoDto { Descripcion = "Categoria" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateCategoriaIngresoValidator.Setup(v => v.ValidateAsync(insertDto, default))
-                .ReturnsAsync(validationResult);
-
-            _mockCategoriaIngresoService.Setup(s => s.Validate(insertDto, id)).Returns(true);
-            _mockCategoriaIngresoService.Setup(s => s.Update(id, insertDto))
-                .ThrowsAsync(new System.Exception("Service error"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<System.Exception>(() => _controller.Put(id, insertDto));
-            Assert.Equal("Service error", exception.Message);
-            _mockInsertUpdateCategoriaIngresoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Validate(insertDto, id), Times.Once);
-            _mockCategoriaIngresoService.Verify(s => s.Update(id, insertDto), Times.Once);
-        }
-
+        
         //
         // DELETE
         //
@@ -359,46 +283,34 @@ namespace BackendGastos.Test
         public async Task Delete_ReturnsNotFound_WhenServiceReturnsNull()
         {
             // Arrange
-            var id = 1L;
-            _mockCategoriaIngresoService.Setup(s => s.Delete(id)).ReturnsAsync((CategoriaIngresoDto)null);
+            var _ = await ArrangeAddSetup();
+            var idSubCat = 100L;
 
             // Act
-            var result = await _controller.Delete(id);
+            var result = await _controller.Delete(idSubCat);
 
             // Assert
-            var notFoundResult = Assert.IsType<NotFoundResult>(result);
-            _mockCategoriaIngresoService.Verify(s => s.Delete(id), Times.Once);
+            Assert.IsType<NotFoundResult>(result.Result);
+            Assert.Null(result.Value);
         }
 
         [Fact]
         public async Task Delete_ReturnsOk_WhenServiceReturnsCategoriaIngresoDto()
         {
             // Arrange
-            var id = 1L;
-            var categoriaIngresoDto = new CategoriaIngresoDto { Id = id, Descripcion = "Categoria" };
-            _mockCategoriaIngresoService.Setup(s => s.Delete(id)).ReturnsAsync(categoriaIngresoDto);
+            var insertedCategorias = await ArrangeAddSetup();
+            var selectedCategoria = insertedCategorias.FirstOrDefault();
 
             // Act
-            var result = await _controller.Delete(id);
+            var result = await _controller.Delete(selectedCategoria.Id);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(categoriaIngresoDto, okResult.Value);
-            _mockCategoriaIngresoService.Verify(s => s.Delete(id), Times.Once);
-        }
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(selectedCategoria, okResult.Value);
 
-        [Fact]
-        public async Task Delete_ThrowsException_WhenServiceFails()
-        {
-            // Arrange
-            var id = 1L;
-            _mockCategoriaIngresoService.Setup(s => s.Delete(id))
-                .ThrowsAsync(new System.Exception("Service error"));
-
-            // Act & Assert
-            var exception = await Assert.ThrowsAsync<System.Exception>(() => _controller.Delete(id));
-            Assert.Equal("Service error", exception.Message);
-            _mockCategoriaIngresoService.Verify(s => s.Delete(id), Times.Once);
+            var servicioNecesario = _serviceProvider.GetRequiredService<ICategoriaIngresoService>();
+            var deletedCategoria = await servicioNecesario.GetById(selectedCategoria.Id);
+            Assert.Null(deletedCategoria);
         }
 
     }

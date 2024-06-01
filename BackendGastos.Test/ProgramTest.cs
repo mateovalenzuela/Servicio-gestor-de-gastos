@@ -32,22 +32,33 @@ namespace BackendGastos.Test
                 .AddJsonFile("appsettings.json")
                 .Build();
 
+            // Services
             builder.AddScoped<ICategoriaIngresoService, CategoriaIngresoService>();
             builder.AddScoped<ICategoriaGastoService, CategoriaGastoService>();
             builder.AddScoped<ISubCategoriaIngresoService, SubCategoriaIngresoService>();
             builder.AddScoped<ISubCategoriaGastoService, SubCategoriaGastoService>();
+
+            // Validators 
             builder.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
             builder.AddScoped<IValidator<CategoriaIngresoDto>, CategoriaIngresoValidator>();
+
             builder.AddScoped<IValidator<InsertUpdateCategoriaGastoDto>, InsertUpdateCategoriaGastoValidator>();
             builder.AddScoped<IValidator<CategoriaGastoDto>, CategoriaGastoValidator>();
+
             builder.AddScoped<IValidator<InsertUpdateSubCategoriaIngresoDto>, InsertUpdateSubCategoriaIngresoValidator>();
             builder.AddScoped<IValidator<SubCategoriaIngresoDto>, SubCategoriaIngresoValidator>();
+
             builder.AddScoped<IValidator<InsertUpdateSubCategoriaGastoDto>, InsertUpdateSubCategoriaGastoValidator>();
             builder.AddScoped<IValidator<SubCategoriaGastoDto>, SubCategoriaGastoValidator>();
+
+            // Repository
             builder.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
             builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
             builder.AddScoped<ISubCategoriaIngresoRepository, SubCategoriaIngresoRepository>();
             builder.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
+
+            // AutoMappers
+            builder.AddAutoMapper(typeof(MappingProfile));
 
             if (!inMemoryDb)
             {
@@ -62,14 +73,22 @@ namespace BackendGastos.Test
                 // Entity Framework 
                 builder.AddDbContext<ProyectoGastosTestContext>(options =>
                 {
-                    options.UseNpgsql(configuration.GetConnectionString("GastosDb"));
+                    options.UseInMemoryDatabase(Guid.NewGuid().ToString());
                 });
             }
 
-            // AutoMappers
-            builder.AddAutoMapper(typeof(MappingProfile));
+            var serviceProvider = builder.BuildServiceProvider();
 
-            return builder.BuildServiceProvider();
+            // Initialize database with seed data if using in-memory database
+            
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ProyectoGastosTestContext>();
+                DatabaseInitializer.Initialize(context);
+            }
+            
+
+            return serviceProvider;
         }
     }
 }

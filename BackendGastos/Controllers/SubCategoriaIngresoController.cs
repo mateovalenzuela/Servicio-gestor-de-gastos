@@ -114,7 +114,7 @@ namespace BackendGastos.Controller.Controllers
 
         // DELETE api/<SubCategoriaIngresoController>/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(long id)
+        public async Task<ActionResult<SubCategoriaIngresoDto>> Delete(long id)
         {
             var subCategoriaIngresoDto = await _subCategoriaIngresoService.Delete(id);
 

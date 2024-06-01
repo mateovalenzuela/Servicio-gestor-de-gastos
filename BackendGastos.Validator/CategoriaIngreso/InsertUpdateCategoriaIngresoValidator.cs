@@ -12,8 +12,8 @@ namespace BackendGastos.Validator.CategoriaIngreso
     {
         public InsertUpdateCategoriaIngresoValidator()
         {
-            RuleFor(c => c.Descripcion).NotEmpty().WithMessage("La {PropertyName} no debe ser null");
-            RuleFor(c => c.Descripcion).Length(2, 30).WithMessage("La {PropertyName} debe tener de 2 a 20 caracteres");
+            //RuleFor(c => c.Descripcion).NotEmpty().WithMessage("La {PropertyName} no debe ser null");
+            RuleFor(c => c.Descripcion).Length(2, 30).WithMessage("La {PropertyName} es obligatoria y debe tener de 2 a 20 caracteres");
         }
     }
 }

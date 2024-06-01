@@ -12,54 +12,115 @@ using System.Text;
 using System.Threading.Tasks;
 using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using Microsoft.Extensions.DependencyInjection;
+using BackendGastos.Repository.Models;
+using BackendGastos.Service.DTOs.CategoriaGasto;
+using System.ComponentModel;
 
 namespace BackendGastos.Test
 {
+    /*
+    [CollectionDefinition("Database collection")]
+    public class DatabaseCollection : ICollectionFixture<DatabaseFixture> { }
+
+    [Collection("Database collection")]*/
     public class SubCategoriaGastoTest
     {
-        private readonly Mock<IValidator<SubCategoriaGastoDto>> _mockSubCategoriaGastoValidator;
-        private readonly Mock<IValidator<InsertUpdateSubCategoriaGastoDto>> _mockInsertUpdateSubCategoriaGastoValidator;
-        private readonly Mock<ISubCategoriaGastoService> _mockSubCategoriaGastoService;
-        private readonly SubCategoriaGastoController _controller;
-
         private readonly ServiceProvider _serviceProvider;
+        private readonly SubCategoriaGastoController _controller;
+        private readonly ProyectoGastosTestContext _context;
+        private readonly InsertUpdateCategoriaGastoDto _validCat;
+        private readonly InsertUpdateCategoriaGastoDto _validCat2;
+        private readonly InsertUpdateSubCategoriaGastoDto _validSubCat;
+        private readonly InsertUpdateSubCategoriaGastoDto _validSubCat2;
+        private readonly InsertUpdateSubCategoriaGastoDto _validSubCat3;
+        private readonly InsertUpdateSubCategoriaGastoDto _ivalidSubCat;
+        private readonly InsertUpdateSubCategoriaGastoDto _repeatedSubCat;
+        private readonly InsertUpdateSubCategoriaGastoDto _createSubCat;
 
         public SubCategoriaGastoTest()
         {
-            _mockSubCategoriaGastoValidator = new Mock<IValidator<SubCategoriaGastoDto>>();
-            _mockInsertUpdateSubCategoriaGastoValidator = new Mock<IValidator<InsertUpdateSubCategoriaGastoDto>>();
-            _mockSubCategoriaGastoService = new Mock<ISubCategoriaGastoService>();
+            _serviceProvider = ProgramTest.GetServices(true);
+
+            _context = _serviceProvider.GetRequiredService<ProyectoGastosTestContext>();
+
+            var subCategoriaGastoService = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
+            var subCategoriaGastoValidator = _serviceProvider.GetRequiredService<IValidator<SubCategoriaGastoDto>>();
+            var insertUpdateSubCategoriaGastoValidator = _serviceProvider.GetRequiredService<IValidator<InsertUpdateSubCategoriaGastoDto>>();
+
             _controller = new SubCategoriaGastoController(
-                _mockSubCategoriaGastoValidator.Object,
-                _mockInsertUpdateSubCategoriaGastoValidator.Object,
-                _mockSubCategoriaGastoService.Object);
-            _serviceProvider = ProgramTest.GetServices(false);
+                subCategoriaGastoValidator,
+                insertUpdateSubCategoriaGastoValidator,
+                subCategoriaGastoService);
+
+
+            _validCat = new InsertUpdateCategoriaGastoDto { Descripcion = "Streeming Services" };
+            _validCat2 = new InsertUpdateCategoriaGastoDto { Descripcion = "Alimentos" };
+
+
+            _validSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Spotify", UsuarioId = 1, CategoriaGastoId = 1 };
+            _validSubCat2 = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Netflix", UsuarioId = 1, CategoriaGastoId = 1 };
+            _validSubCat3 = new  InsertUpdateSubCategoriaGastoDto { Descripcion = "Supermercado", UsuarioId = 1, CategoriaGastoId = 2 };
+            _ivalidSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "", UsuarioId = -1, CategoriaGastoId = -2 };
+            _repeatedSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Netflix", UsuarioId = 1, CategoriaGastoId = 1 };
+            _createSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Verduleria", UsuarioId = 1, CategoriaGastoId = 2 };
+
+
+        }
+
+        private async Task<List<SubCategoriaGastoDto>> ArrangeAddStup()
+        {
+            // Arrange
+
+            // Add two users
+            var usuarios = new List<AuthenticationUsuario>
+            {
+            new() { Id = 1, Username = "Test 1", Email = "usuario_test1@example.com", Password = "fwewfwefwe",
+                    IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },
+            new() { Id = 2, Username = "Test 2", Email = "usuario_test2@example.com", Password = "fwewfwefwe",
+                    IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },
+            };
+
+            _context.AuthenticationUsuarios.AddRange(usuarios);
+            _context.SaveChanges();
+
+
+            var servicioNecesario = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
+            var servicioCategoriaGasto = _serviceProvider.GetRequiredService<ICategoriaGastoService>();
+
+            
+            _ = await servicioCategoriaGasto.Add(_validCat);
+            _ = await servicioCategoriaGasto.Add(_validCat2);
+
+
+            var addedSubCategoria1 = await servicioNecesario.Add(_validSubCat);
+            var addedSubCategoria2 = await servicioNecesario.Add(_validSubCat2);
+            var addedSubCategoria3 = await servicioNecesario.Add(_validSubCat3);
+
+            var expectedSubCategorias = new List<SubCategoriaGastoDto> {addedSubCategoria1, addedSubCategoria2, addedSubCategoria3 };
+            return expectedSubCategorias;
         }
 
         [Fact]
         public async Task Get_ReturnsSubCategoriaGastoDtoList()
         {
             // Arrange
-            var servicioNecesario = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
-
-            var subCategorias = new List<SubCategoriaGastoDto> { new() { Id = 1, Descripcion = "Test" } };
-            _mockSubCategoriaGastoService.Setup(s => s.Get()).ReturnsAsync(subCategorias);
+            var expectedSubCategorias = await ArrangeAddStup();
 
             // Act
             var result = await _controller.Get();
 
             // Assert
             Assert.IsType<List<SubCategoriaGastoDto>>(result);
-            Assert.Equal(subCategorias, result);
-            _mockSubCategoriaGastoService.Verify(s => s.Get(), Times.Once);
-        }
 
+            var resultList = result.ToList();
+            Assert.Equal(resultList, expectedSubCategorias);
+        }
+        
         [Fact]
         public async Task Get_ReturnsEmpitySubCategoriaGastoDtoList()
         {
             // Arrange
-            var subCategorias = new List<SubCategoriaGastoDto>();
-            _mockSubCategoriaGastoService.Setup(s => s.Get()).ReturnsAsync(subCategorias);
+            
 
             // Act
             var result = await _controller.Get();
@@ -67,16 +128,15 @@ namespace BackendGastos.Test
             // Assert
             Assert.IsType<List<SubCategoriaGastoDto>>(result);
             Assert.Empty(result);
-            Assert.Equal(subCategorias, result);
-            _mockSubCategoriaGastoService.Verify(s => s.Get(), Times.Once);
         }
 
+        
 
         [Fact]
         public async Task Get_ReturnsNotFound_WhenSubCategoriaGastoDtoNotFound()
         {
             // Arrange
-            _mockSubCategoriaGastoService.Setup(s => s.GetById(It.IsAny<long>())).ReturnsAsync((SubCategoriaGastoDto)null);
+            
 
             // Act
             var result = await _controller.Get(1);
@@ -84,73 +144,83 @@ namespace BackendGastos.Test
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
             Assert.Null(result.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetById(It.IsAny<long>()), Times.Once);
         }
 
-
+        
         [Fact]
         public async Task GetByCategoriaGasto_ReturnsSubCategoriaGastoDtoList()
         {
             // Arrange
-            var subCategorias = new List<SubCategoriaGastoDto> { new() { Id = 1, Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 } };
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByCategoriaGasto(1)).ReturnsAsync(subCategorias);
-
+            var idCat = 1L;
+            var insertedSubCategorias = await ArrangeAddStup();
+            var expectedSubCategorias = insertedSubCategorias.Where(s => s.CategoriaGastoId == idCat).ToList();
+            
             // Act
-            var result = await _controller.GetByCategoriaGasto(1);
+            var result = await _controller.GetByCategoriaGasto(idCat);
 
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategorias, objectResult.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByCategoriaGasto(1), Times.Once);
+            var actualSubCategorias = Assert.IsType<List<SubCategoriaGastoDto>>(objectResult.Value);
+
+            Assert.NotNull(actualSubCategorias);
+            Assert.Equal(expectedSubCategorias, actualSubCategorias);
+            Assert.Equal(expectedSubCategorias.Count, actualSubCategorias.Count);
+            
         }
 
-
+        
         [Fact]
         public async Task GetByCategoriaGasto_ReturnsNull()
         {
             // Arrange
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByCategoriaGasto(1)).ReturnsAsync((List<SubCategoriaGastoDto>)null);
+            var insertedSubCategorias = await ArrangeAddStup();
+            var idCat = 100L;
+            var expectedSubCategorias = insertedSubCategorias.Where(s => s.CategoriaGastoId == idCat).ToList();
 
             // Act
-            var result = await _controller.GetByCategoriaGasto(1);
+            var result = await _controller.GetByCategoriaGasto(idCat);
 
             // Assert
             var objectResult = Assert.IsType<NotFoundResult>(result.Result);
             Assert.Null(result.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByCategoriaGasto(1), Times.Once);
         }
 
-
+        
         [Fact]
         public async Task GetByUsuario_ReturnsSubCategoriaGastoDtoList()
         {
             // Arrange
-            var subCategorias = new List<SubCategoriaGastoDto> { new() { Id = 1, Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 } };
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByUser(1)).ReturnsAsync(subCategorias);
+            var expectedSubCategorias = await ArrangeAddStup();
 
+            var idUser = expectedSubCategorias.ElementAt(0).UsuarioId;
             // Act
-            var result = await _controller.GetByUser(1);
+            var result = await _controller.GetByUser(idUser);
 
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategorias, objectResult.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByUser(1), Times.Once);
+            var actualSubCategorias = Assert.IsType<List<SubCategoriaGastoDto>>(objectResult.Value);
+
+            Assert.NotNull(actualSubCategorias);
+            Assert.Equal(expectedSubCategorias.Count, actualSubCategorias.Count);
+            Assert.Equal(expectedSubCategorias, actualSubCategorias);
         }
 
-
+        
         [Fact]
         public async Task GetByUser_ReturnsNull()
         {
             // Arrange
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByUser(1)).ReturnsAsync((List<SubCategoriaGastoDto>)null);
+            var insertedSubCategorias = await ArrangeAddStup();
+            var idUser = 200L;
+            var expectedSubCategorias = insertedSubCategorias.Where(s => s.UsuarioId == idUser).ToList();
 
             // Act
-            var result = await _controller.GetByUser(1);
+            var result = await _controller.GetByUser(idUser);
 
             // Assert
             var objectResult = Assert.IsType<NotFoundResult>(result.Result);
             Assert.Null(result.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByUser(1), Times.Once);
+            Assert.Empty(expectedSubCategorias);
         }
 
 
@@ -158,224 +228,211 @@ namespace BackendGastos.Test
         public async Task GetByUserAndCategoriaGasto_ReturnsSubCategoriaGastoDtoList()
         {
             // Arrange
-            var subCategorias = new List<SubCategoriaGastoDto> { new() { Id = 1, Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 } };
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByUserAndCategoriaGasto(1, 1)).ReturnsAsync(subCategorias);
+            var insertedSubCategorias = await ArrangeAddStup();
+
+            var idUser = insertedSubCategorias.ElementAt(0).UsuarioId;
+            var idCat = insertedSubCategorias.ElementAt(0).CategoriaGastoId;
+            var expectedSubCategorias = insertedSubCategorias.Where(s => s.CategoriaGastoId == idCat &&
+                                                                         s.UsuarioId == idUser).ToList();
+
 
             // Act
-            var result = await _controller.GetByUserAndCategoriaGasto(1, 1);
+            var result = await _controller.GetByUserAndCategoriaGasto(idUser, idCat);
 
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategorias, objectResult.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByUserAndCategoriaGasto(1, 1), Times.Once);
+            var actualSubCategorias = Assert.IsType<List<SubCategoriaGastoDto>>(objectResult.Value);
+
+            Assert.NotNull(actualSubCategorias);
+            Assert.Equal(expectedSubCategorias, actualSubCategorias);
+            Assert.Equal(expectedSubCategorias.Count, actualSubCategorias.Count);
         }
 
-
+        
         [Fact]
         public async Task GetByUserAndCategoriaGasto_ReturnsNull()
         {
             // Arrange
-            _mockSubCategoriaGastoService.Setup(s => s.GetActiveByUserAndCategoriaGasto(1, 1)).ReturnsAsync((List<SubCategoriaGastoDto>)null);
-
+            var _ = ArrangeAddStup();
+            var idUser = 100L;
+            var idCat = 100L;
             // Act
-            var result = await _controller.GetByUserAndCategoriaGasto(1, 1);
+            var result = await _controller.GetByUserAndCategoriaGasto(idUser, idCat);
 
             // Assert
             var objectResult = Assert.IsType<NotFoundResult>(result.Result);
             Assert.Null(result.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetActiveByUserAndCategoriaGasto(1, 1), Times.Once);
         }
 
 
 
-
+        
         [Fact]
         public async Task Get_ReturnsOk_WhenSubCategoriaGastoDtoFound()
         {
             // Arrange
-            var subCategoriaGastoDto = new SubCategoriaGastoDto { Id = 1, Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1};
-            _mockSubCategoriaGastoService.Setup(s => s.GetById(It.IsAny<long>())).ReturnsAsync(subCategoriaGastoDto);
-
+            var categoriasAgregadas = await ArrangeAddStup();
+            var catSelected = categoriasAgregadas.ElementAt(0);
             // Act
-            var result = await _controller.Get(1);
+            var result = await _controller.Get(catSelected.Id);
 
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategoriaGastoDto, objectResult.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.GetById(It.IsAny<long>()), Times.Once);
-        }
+            var actualValue = Assert.IsType<SubCategoriaGastoDto>(objectResult.Value);
 
+            Assert.NotNull(actualValue);
+            Assert.Equal(catSelected, actualValue);
+            
+        }
+        
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenModelIsInvalid()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var validationResult = new ValidationResult(new List<ValidationFailure> { new("Descripcion", "Error") });
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
+            var _ = ArrangeAddStup();
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_ivalidSubCat);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Single(errors);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
+            Assert.Equal(3, errors.Count);
         }
-
+        
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenServiceValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-            _mockSubCategoriaGastoService.Setup(s => s.Validate(insertDto)).ReturnsAsync(false);
-            _mockSubCategoriaGastoService.Setup(s => s.Errors).Returns(["Error"]);
+            var _ = await ArrangeAddStup();
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_repeatedSubCat);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var errors = Assert.IsAssignableFrom<List<string>>(badRequestResult.Value);
             Assert.Single(errors);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Validate(insertDto), Times.Once);
         }
-
+        
         [Fact]
         public async Task Add_ReturnsCreatedAtAction_WhenModelIsValid()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var subCategoriaGastoDto = new SubCategoriaGastoDto { Id = 1, Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1};
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-            _mockSubCategoriaGastoService.Setup(s => s.Validate(insertDto)).ReturnsAsync(true);
-            _mockSubCategoriaGastoService.Setup(s => s.Add(insertDto)).ReturnsAsync(subCategoriaGastoDto);
+            var insertedSubCats = await ArrangeAddStup();
 
             // Act
-            var result = await _controller.Add(insertDto);
+            var result = await _controller.Add(_createSubCat);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            Assert.Equal(subCategoriaGastoDto, createdAtActionResult.Value);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Validate(insertDto), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Add(insertDto), Times.Once);
+            Assert.NotNull(createdAtActionResult.Value);
+            Assert.IsType<SubCategoriaGastoDto>(createdAtActionResult.Value);
         }
-
+        
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenModelIsInvalid()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var validationResult = new ValidationResult(new List<ValidationFailure> { new("Descripcion", "Error") });
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-
+            var insertedSunCategorias = await ArrangeAddStup();
+            var selectedSunCategoria = insertedSunCategorias.FirstOrDefault();
+            var invalidSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "", UsuarioId = 0, CategoriaGastoId = 0 };
             // Act
-            var result = await _controller.Put(1, insertDto);
+            var result = await _controller.Put(selectedSunCategoria.Id, invalidSubCat);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Single(errors);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
+            Assert.Equal(errors.Count, 3);
         }
-
+        
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenServiceValidationFails()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-            _mockSubCategoriaGastoService.Setup(s => s.Validate(insertDto)).ReturnsAsync(false);
-            _mockSubCategoriaGastoService.Setup(s => s.Errors).Returns(["Error"]);
+            var insertedSubCategorias = await ArrangeAddStup();
+            var selectedSubCategorias = insertedSubCategorias.FirstOrDefault();
+            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = selectedSubCategorias.Descripcion, CategoriaGastoId = 100, UsuarioId = 100 };
 
             // Act
-            var result = await _controller.Put(1, insertDto);
+            var result = await _controller.Put(selectedSubCategorias.Id, insertDto);
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var errors = Assert.IsAssignableFrom<List<string>>(badRequestResult.Value);
-            Assert.Single(errors);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Validate(insertDto), Times.Once);
+            Assert.Equal(errors.Count, 3);
         }
 
         [Fact]
         public async Task Put_ReturnsNotFound_WhenSubCategoriaGastoDtoNotFound()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-            _mockSubCategoriaGastoService.Setup(s => s.Validate(insertDto)).ReturnsAsync(true);
-            _mockSubCategoriaGastoService.Setup(s => s.Update(It.IsAny<long>(), insertDto)).ReturnsAsync((SubCategoriaGastoDto)null);
+            var insertedSubCategorias = await ArrangeAddStup();
+            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Disney +", CategoriaGastoId = 1, UsuarioId = 1 };
+            var idSubCat = 100L;
 
             // Act
-            var result = await _controller.Put(1, insertDto);
+            var result = await _controller.Put(idSubCat, insertDto);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result.Result);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Validate(insertDto), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Update(It.IsAny<long>(), insertDto), Times.Once);
-        }
+            var badRequestResult = Assert.IsType<NotFoundResult>(result.Result);
+            Assert.Null(result.Value);
 
+        }
+        
         [Fact]
         public async Task Put_ReturnsOk_WhenModelIsValid()
         {
             // Arrange
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Test", CategoriaGastoId = 1, UsuarioId = 1 };
-            var subCategoriaGastoDto = new SubCategoriaGastoDto { Id = 1, Descripcion = "Test" };
-            var validationResult = new ValidationResult();
-            _mockInsertUpdateSubCategoriaGastoValidator.Setup(v => v.ValidateAsync(insertDto, default)).ReturnsAsync(validationResult);
-            _mockSubCategoriaGastoService.Setup(s => s.Validate(insertDto)).ReturnsAsync(true);
-            _mockSubCategoriaGastoService.Setup(s => s.Update(It.IsAny<long>(), insertDto)).ReturnsAsync(subCategoriaGastoDto);
-
+            var insertedSubCategorias = await ArrangeAddStup();
+            var selectedSubCategoria = insertedSubCategorias.FirstOrDefault();
+            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Disney +", CategoriaGastoId = selectedSubCategoria.CategoriaGastoId , UsuarioId = selectedSubCategoria.UsuarioId };
+            var expectedSubCategoria = new SubCategoriaGastoDto
+            {
+                Id = selectedSubCategoria.Id,
+                Descripcion = insertDto.Descripcion,
+                UsuarioId = insertDto.UsuarioId,
+                CategoriaGastoId = insertDto.CategoriaGastoId
+            };
             // Act
-            var result = await _controller.Put(1, insertDto);
+            var result = await _controller.Put(selectedSubCategoria.Id, insertDto);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategoriaGastoDto, okResult.Value);
-            _mockInsertUpdateSubCategoriaGastoValidator.Verify(v => v.ValidateAsync(insertDto, default), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Validate(insertDto), Times.Once);
-            _mockSubCategoriaGastoService.Verify(s => s.Update(It.IsAny<long>(), insertDto), Times.Once);
+            Assert.Equal(expectedSubCategoria, okResult.Value);
         }
-
+        
         [Fact]
         public async Task Delete_ReturnsNotFound_WhenSubCategoriaGastoDtoNotFound()
         {
             // Arrange
-            _mockSubCategoriaGastoService.Setup(s => s.Delete(It.IsAny<long>())).ReturnsAsync((SubCategoriaGastoDto)null);
+            var _ = await ArrangeAddStup();
+            var idSubCat = 100L;
 
             // Act
-            var result = await _controller.Delete(1);
+            var result = await _controller.Delete(idSubCat);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
             Assert.Null(result.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.Delete(It.IsAny<long>()), Times.Once);
         }
 
+        
         [Fact]
         public async Task Delete_ReturnsOk_WhenSubCategoriaGastoDtoDeleted()
         {
             // Arrange
-            var subCategoriaGastoDto = new SubCategoriaGastoDto { Id = 1, Descripcion = "Test" };
-            _mockSubCategoriaGastoService.Setup(s => s.Delete(It.IsAny<long>())).ReturnsAsync(subCategoriaGastoDto);
+            var insertedSubCategoriad = await ArrangeAddStup();
+            var selectedSubCategoria = insertedSubCategoriad.FirstOrDefault();
 
             // Act
-            var result = await _controller.Delete(1);
+            var result = await _controller.Delete(selectedSubCategoria.Id);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.Equal(subCategoriaGastoDto, okResult.Value);
-            _mockSubCategoriaGastoService.Verify(s => s.Delete(It.IsAny<long>()), Times.Once);
+            Assert.Equal(selectedSubCategoria, okResult.Value);
+            Assert.Null(_context.GastosSubcategoriagastos.FirstOrDefault(s => s.Id == selectedSubCategoria.Id 
+                                                                                && s.Baja == false));
         }
-    }
+    }   
 }

@@ -12,11 +12,13 @@ namespace BackendGastos.Validator.SubCategoriaGasto
     {
         public InsertUpdateSubCategoriaGastoValidator()
         {
-            RuleFor(s => s.Descripcion).NotEmpty().WithMessage("La {PropertyName} de la categoria es obligatoria");
-            RuleFor(s => s.Descripcion).Length(2, 30).WithMessage("La {PropertyName} debe tener de 2 a 20 caracteres");
+            RuleFor(s => s.Descripcion).Length(2, 30).WithMessage("La {PropertyName} es obligadoria, debe tener de 2 a 20 caracteres");
 
-            RuleFor(s => s.CategoriaGastoId).NotEmpty().WithMessage("El {PropertyNaame} no debe ser nulo");
-            RuleFor(s => s.CategoriaGastoId).GreaterThan(0).WithMessage("El {PropertyNaame} no es valido");
+            //RuleFor(s => s.CategoriaGastoId).NotEmpty().WithMessage("El {PropertyName} no debe ser nulo");
+            RuleFor(s => s.CategoriaGastoId).GreaterThan(0).WithMessage("El {PropertyName} no es valido");
+
+           // RuleFor(s => s.UsuarioId).NotEmpty().WithMessage("El {PropertyName} no debe ser nulo");
+            RuleFor(s => s.UsuarioId).GreaterThan(0).WithMessage("El {PropertyName} no es valido");
         }
     }
 }

@@ -12,8 +12,8 @@ namespace BackendGastos.Validator.CategoriaGasto
     {
         public InsertUpdateCategoriaGastoValidator()
         {
-            RuleFor(c => c.Descripcion).NotEmpty().WithMessage("La descripcion de la categoria es obligatoria");
-            RuleFor(c => c.Descripcion).Length(2, 30).WithMessage("La {PropertyName} debe tener de 2 a 20 caracteres");
+            //RuleFor(c => c.Descripcion).NotEmpty().WithMessage("La descripcion de la categoria es obligatoria");
+            RuleFor(c => c.Descripcion).Length(2, 30).WithMessage("La {PropertyName} es obligatoria y debe tener de 2 a 20 caracteres");
         }
     }
 }
