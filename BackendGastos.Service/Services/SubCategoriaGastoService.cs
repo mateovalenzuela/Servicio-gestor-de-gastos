@@ -12,7 +12,7 @@ namespace BackendGastos.Service.Services
 {
     public class SubCategoriaGastoService : ISubCategoriaGastoService
     {
-        public List<string> Errors { get; }
+        public Dictionary<string, string> Errors { get; }
         private readonly ISubCategoriaGastoRepository _subCategoriaGastoRepository;
         private readonly IMapper _mapper;
 
@@ -139,21 +139,21 @@ namespace BackendGastos.Service.Services
             if (_subCategoriaGastoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion &&
                                                             id != s.Id).Count() > 0)
             {
-                Errors.Add("La SubCategoria ya existe");
+                Errors.Add("Subcategoria", "La SubCategoria ya existe");
                 flag = false;
             }
 
             var categoria = await _subCategoriaGastoRepository.GetCategoriaGastoById(insertUpdateDto.CategoriaGastoId);
             if (categoria == null)
             {
-                Errors.Add("La Categoria Gasto no existe");
+                Errors.Add("Categoria", "La Categoria Gasto no existe");
                 flag = false;
             }
 
             var user = await _subCategoriaGastoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
-                Errors.Add("El Usuario no existe");
+                Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 
@@ -165,21 +165,21 @@ namespace BackendGastos.Service.Services
             bool flag = true;
             if (_subCategoriaGastoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
             {
-                Errors.Add("La SubCategoria ya existe");
+                Errors.Add("Descripcion", "La SubCategoria ya existe");
                 flag = false;
             }
 
             var categoria = await _subCategoriaGastoRepository.GetCategoriaGastoById(insertUpdateDto.CategoriaGastoId);
             if (categoria == null)
             {
-                Errors.Add("La Categoria Gasto no existe");
+                Errors.Add("Categoria", "La Categoria Gasto no existe");
                 flag = false;
             }
 
             var user = await _subCategoriaGastoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
-                Errors.Add("El Usuario no existe");
+                Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 

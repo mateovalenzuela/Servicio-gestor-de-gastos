@@ -310,8 +310,8 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<string>>(badRequestResult.Value);
-            Assert.Single(errors);
+            var errors = Assert.IsAssignableFrom<Dictionary<string, string>>(badRequestResult.Value);
+            Assert.True(errors.ContainsKey("Descripcion"));
         }
         
         [Fact]
@@ -358,8 +358,11 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<string>>(badRequestResult.Value);
-            Assert.Equal(errors.Count, 3);
+            var errors = Assert.IsAssignableFrom<Dictionary<string, string>>(badRequestResult.Value);
+            Assert.True(errors.ContainsKey("Descripcion"));
+            Assert.True(errors.ContainsKey("Categoria"));
+            Assert.True(errors.ContainsKey("Usuario"));
+
         }
 
         [Fact]

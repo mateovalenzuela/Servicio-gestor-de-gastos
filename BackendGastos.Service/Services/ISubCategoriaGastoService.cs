@@ -10,7 +10,6 @@ namespace BackendGastos.Service.Services
 {
     public interface ISubCategoriaGastoService : ICommonService<SubCategoriaGastoDto, InsertUpdateSubCategoriaGastoDto>
     {
-        public List<string> Errors { get;}
         Task<IEnumerable<SubCategoriaGastoDto>> GetActiveByUser(long idUser);
 
         Task<IEnumerable<SubCategoriaGastoDto>> GetActiveByUserAndCategoriaGasto(long idUser, long idSubCategoriaGasto);

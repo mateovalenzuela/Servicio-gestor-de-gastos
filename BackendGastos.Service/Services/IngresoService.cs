@@ -12,16 +12,13 @@ namespace BackendGastos.Service.Services
 {
     public class IngresoService : IIngresoService
     {
-        public Dictionary<string, string> Errors2 { get; }
-        public List<string> Errors { get; }
-
+        public Dictionary<string, string> Errors { get; }
         private readonly IIngresoRepository _ingresoRepository;
         private readonly IMapper _mapper;
 
         public IngresoService(IIngresoRepository ingresoRepository, IMapper mapper)
         {
-            Errors2 = new Dictionary<string, string>();
-            Errors = new List<string>();
+            Errors = new Dictionary<string, string>();
             _ingresoRepository = ingresoRepository;
             _mapper = mapper;
         }
@@ -144,28 +141,28 @@ namespace BackendGastos.Service.Services
             var categoria = await _ingresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
-                Errors2.Add("Categoria", "La Categoria Ingreso no existe");
+                Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
             var subcategoria = await _ingresoRepository.GetSubCategoriaIngresoById(insertUpdateDto.SubcategoriaIngresoId);
             if (subcategoria == null)
             {
-                Errors2.Add("Subcategoria", "La Subcategoria Ingreso no existe");
+                Errors.Add("Subcategoria", "La Subcategoria Ingreso no existe");
                 flag = false;
             }
 
             var user = await _ingresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
-                Errors2.Add("Usuario", "El Usuario no existe");
+                Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 
             var moneda = await _ingresoRepository.GetMonedaById(insertUpdateDto.MonedaId);
             if (moneda == null)
             {
-                Errors2.Add("Moneda", "La Moneda no es valida");
+                Errors.Add("Moneda", "La Moneda no es valida");
                 flag = false;
             }
 
@@ -179,28 +176,28 @@ namespace BackendGastos.Service.Services
             var categoria = await _ingresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
-                Errors2.Add("Categoria", "La Categoria Ingreso no existe");
+                Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
             var subcategoria = await _ingresoRepository.GetSubCategoriaIngresoById(insertUpdateDto.SubcategoriaIngresoId);
             if (subcategoria == null)
             {
-                Errors2.Add("Subcategoria", "La Subcategoria Ingreso no existe");
+                Errors.Add("Subcategoria", "La Subcategoria Ingreso no existe");
                 flag = false;
             }
 
             var user = await _ingresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
-                Errors2.Add("Usuario", "El Usuario no existe");
+                Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 
             var moneda = await _ingresoRepository.GetMonedaById(insertUpdateDto.MonedaId);
             if (moneda == null)
             {
-                Errors2.Add("Moneda", "La Moneda no es valida");
+                Errors.Add("Moneda", "La Moneda no es valida");
                 flag = false;
             }
 

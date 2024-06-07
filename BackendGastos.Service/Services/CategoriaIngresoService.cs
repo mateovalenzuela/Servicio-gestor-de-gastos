@@ -17,13 +17,13 @@ namespace BackendGastos.Service.Services
     {
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
         private readonly IMapper _mapper;
-        public List<string> Errors { get; }
+        public Dictionary<string, string> Errors { get; }
 
         public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository, IMapper mapper)
         {
             _categoriaIngresoRepository = categoriaIngresoRepository;
             _mapper = mapper;
-            Errors = new List<string>();
+            Errors = new Dictionary<string, string>();
         }
 
         
@@ -101,7 +101,7 @@ namespace BackendGastos.Service.Services
             if (_categoriaIngresoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion &&
                                                       id != c.Id).Count() > 0)
             {
-                Errors.Add("La categoria ya existe");
+                Errors.Add("Categoria", "La categoria ya existe");
                 return false;
             }
             return true;
@@ -111,7 +111,7 @@ namespace BackendGastos.Service.Services
         {
             if (_categoriaIngresoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
             {
-                Errors.Add("La categoria ya existe");
+                Errors.Add("Categoria", "La categoria ya existe");
                 return false;
             }
             return true;

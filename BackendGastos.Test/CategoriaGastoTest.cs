@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BackendGastos.Repository.Models;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.ObjectModel;
 
 namespace BackendGastos.Test
 {
@@ -151,8 +152,8 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<string>>(badRequestResult.Value);
-            Assert.Single(errors);
+            var errors = Assert.IsAssignableFrom<Dictionary<string, string>>(badRequestResult.Value);
+            Assert.True(errors.ContainsKey("Categoria"));
         }
 
         [Fact]

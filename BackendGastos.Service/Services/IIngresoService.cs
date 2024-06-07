@@ -10,7 +10,6 @@ namespace BackendGastos.Service.Services
 {
     public interface IIngresoService : ICommonService<IngresoDto, InsertUpdateIngresoDto>
     {
-        public Dictionary<string, string> Errors2 { get; }
         Task<IEnumerable<IngresoDto>> GetByUserId(long idUser);
         Task<IEnumerable<IngresoDto>> GetByCategoriaIngresoId(long idCategoriaIngreso);
         Task<IEnumerable<IngresoDto>> GetBySubCategoriaIngresoId(long idSubCategoriaIngreso);

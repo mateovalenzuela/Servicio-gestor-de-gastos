@@ -87,7 +87,7 @@ namespace BackendGastos.Controller.Controllers
 
             if (! await _ingresoService.Validate(insertUpdateIngresoDto))
             {
-                return BadRequest(_ingresoService.Errors2);
+                return BadRequest(_ingresoService.Errors);
             }
 
             var ingresoDto = await _ingresoService.Add(insertUpdateIngresoDto);
