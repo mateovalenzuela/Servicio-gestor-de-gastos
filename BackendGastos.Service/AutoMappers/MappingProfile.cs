@@ -2,6 +2,7 @@
 using BackendGastos.Repository.Models;
 using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
 using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using System;
@@ -28,6 +29,9 @@ namespace BackendGastos.Service.AutoMappers
             // SubCategoriaGasto
             CreateMap<InsertUpdateSubCategoriaGastoDto, GastosSubcategoriagasto>();
             CreateMap<GastosSubcategoriagasto, SubCategoriaGastoDto>();
+            // Ingreso
+            CreateMap<InsertUpdateIngresoDto, GastosIngreso>();
+            CreateMap<GastosIngreso, IngresoDto>();
         }
     }
 }

@@ -3,11 +3,13 @@ using BackendGastos.Repository.Repository;
 using BackendGastos.Service.AutoMappers;
 using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.DTOs.CategoriaIngreso;
+using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
 using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
 using BackendGastos.Validator.CategoriaGasto;
 using BackendGastos.Validator.CategoriaIngreso;
+using BackendGastos.Validator.Ingreso;
 using BackendGastos.Validator.SubCategoriaGasto;
 using BackendGastos.Validator.SubCategoriaIngreso;
 using FluentValidation;
@@ -37,6 +39,8 @@ namespace BackendGastos.Test
             builder.AddScoped<ICategoriaGastoService, CategoriaGastoService>();
             builder.AddScoped<ISubCategoriaIngresoService, SubCategoriaIngresoService>();
             builder.AddScoped<ISubCategoriaGastoService, SubCategoriaGastoService>();
+            builder.AddScoped<IIngresoService, IngresoService>();
+
 
             // Validators 
             builder.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
@@ -51,11 +55,18 @@ namespace BackendGastos.Test
             builder.AddScoped<IValidator<InsertUpdateSubCategoriaGastoDto>, InsertUpdateSubCategoriaGastoValidator>();
             builder.AddScoped<IValidator<SubCategoriaGastoDto>, SubCategoriaGastoValidator>();
 
+            builder.AddScoped<IValidator<InsertUpdateIngresoDto>, InsertUpdateIngresoValidator>();
+            builder.AddScoped<IValidator<IngresoDto>, IngresoValidator>();
+
+
             // Repository
             builder.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
             builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
             builder.AddScoped<ISubCategoriaIngresoRepository, SubCategoriaIngresoRepository>();
             builder.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
+            builder.AddScoped<IIngresoRepository, IngresoRepository>();
+
+
 
             // AutoMappers
             builder.AddAutoMapper(typeof(MappingProfile));

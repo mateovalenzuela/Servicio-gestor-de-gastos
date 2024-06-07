@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Validator.Ingreso
 {
-    internal class IngresoValidator : AbstractValidator<IngresoDto>
+    public class IngresoValidator : AbstractValidator<IngresoDto>
     {
         public IngresoValidator()
         {

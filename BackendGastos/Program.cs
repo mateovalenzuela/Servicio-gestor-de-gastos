@@ -12,6 +12,8 @@ using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Validator.SubCategoriaIngreso;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
 using BackendGastos.Validator.SubCategoriaGasto;
+using BackendGastos.Service.DTOs.Ingreso;
+using BackendGastos.Validator.Ingreso;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +31,7 @@ builder.Services.AddScoped<ICategoriaIngresoService, CategoriaIngresoService>();
 builder.Services.AddScoped<ICategoriaGastoService, CategoriaGastoService>();
 builder.Services.AddScoped<ISubCategoriaIngresoService, SubCategoriaIngresoService>();
 builder.Services.AddScoped<ISubCategoriaGastoService, SubCategoriaGastoService>();
+builder.Services.AddScoped<IIngresoService, IngresoService>();
 
 
 // Validators 
@@ -44,12 +47,16 @@ builder.Services.AddScoped<IValidator<SubCategoriaIngresoDto>, SubCategoriaIngre
 builder.Services.AddScoped<IValidator<InsertUpdateSubCategoriaGastoDto>, InsertUpdateSubCategoriaGastoValidator>();
 builder.Services.AddScoped<IValidator<SubCategoriaGastoDto>, SubCategoriaGastoValidator>();
 
+builder.Services.AddScoped<IValidator<InsertUpdateIngresoDto>, InsertUpdateIngresoValidator>();
+builder.Services.AddScoped<IValidator<IngresoDto>, IngresoValidator>();
+
 
 // Repository
 builder.Services.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
 builder.Services.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
 builder.Services.AddScoped<ISubCategoriaIngresoRepository,  SubCategoriaIngresoRepository>();
-builder.Services.AddScoped< ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
+builder.Services.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
+builder.Services.AddScoped<IIngresoRepository, IngresoRepository>();
 
 
 
