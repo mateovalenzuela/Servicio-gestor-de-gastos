@@ -16,10 +16,6 @@ namespace BackendGastos.Repository.Repository
 
         Task<IEnumerable<GastosSubcategoriaingreso>> GetActiveByCategoriaIngreso(long idSubCategoriaIngreso);
 
-        Task<GastosCategoriaigreso> GetCategoriaIngresoById(long idCategoriaIngreso);
-        Task<AuthenticationUsuario> GetUsuarioById(long idUser);
-
         IEnumerable<GastosSubcategoriaingreso> Search(Func<GastosSubcategoriaingreso, bool> filter);
-
     }
 }

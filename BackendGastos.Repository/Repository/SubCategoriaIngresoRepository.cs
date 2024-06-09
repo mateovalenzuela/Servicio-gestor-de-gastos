@@ -32,32 +32,6 @@ namespace BackendGastos.Repository.Repository
             return subCategoriasIngreso;
         }
 
-        public async Task<GastosCategoriaigreso> GetCategoriaIngresoById(long id)
-        {
-            var categoriaIngresos = await _context.GastosCategoriaigresos.FindAsync(id);
-            if (categoriaIngresos == null) return null;
-
-            if (categoriaIngresos.Baja == false)
-            {
-                return categoriaIngresos;
-            }
-
-            return null;
-        }
-
-        public async Task<AuthenticationUsuario> GetUsuarioById(long id)
-        {
-            var user = await _context.AuthenticationUsuarios.FindAsync(id);
-            if (user == null) return null;
-
-            if (user.IsActive == true)
-            {
-                return user;
-            }
-
-            return null;
-        }
-
         public async Task<IEnumerable<GastosSubcategoriaingreso>> GetActive()
         {
             var subCategoriasIngreso = await _context.GastosSubcategoriaingresos.Where(c => c.Baja == false).ToListAsync();

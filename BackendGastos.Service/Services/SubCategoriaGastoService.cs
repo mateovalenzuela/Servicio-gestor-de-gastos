@@ -16,12 +16,19 @@ namespace BackendGastos.Service.Services
         private readonly ISubCategoriaGastoRepository _subCategoriaGastoRepository;
         private readonly IMapper _mapper;
 
+        private readonly ICategoriaGastoRepository _categoriaGastoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+
         public SubCategoriaGastoService(ISubCategoriaGastoRepository subCategoriaGastoRepository, 
-            IMapper mapper)
+            IMapper mapper, 
+            ICategoriaGastoRepository categoriaGastoRepository, 
+            IUsuarioRepository usuarioRepository)
         {
             Errors = [];
             _subCategoriaGastoRepository = subCategoriaGastoRepository;
             _mapper = mapper;
+            _categoriaGastoRepository = categoriaGastoRepository;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<SubCategoriaGastoDto> Add(InsertUpdateSubCategoriaGastoDto insertUpdateDto)
@@ -29,8 +36,8 @@ namespace BackendGastos.Service.Services
             var subCategoriaGasto = _mapper.Map<GastosSubcategoriagasto>(insertUpdateDto);
             subCategoriaGasto.FechaCreacion = DateTime.UtcNow;
 
-            subCategoriaGasto.CategoriaGasto = await _subCategoriaGastoRepository.GetCategoriaGastoById(insertUpdateDto.CategoriaGastoId);
-            subCategoriaGasto.Usuario = await _subCategoriaGastoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            subCategoriaGasto.CategoriaGasto = await _categoriaGastoRepository.GetActiveById(insertUpdateDto.CategoriaGastoId);
+            subCategoriaGasto.Usuario = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
 
             await _subCategoriaGastoRepository.Add(subCategoriaGasto);
             await _subCategoriaGastoRepository.Save();
@@ -143,14 +150,14 @@ namespace BackendGastos.Service.Services
                 flag = false;
             }
 
-            var categoria = await _subCategoriaGastoRepository.GetCategoriaGastoById(insertUpdateDto.CategoriaGastoId);
+            var categoria = await _categoriaGastoRepository.GetActiveById(insertUpdateDto.CategoriaGastoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Gasto no existe");
                 flag = false;
             }
 
-            var user = await _subCategoriaGastoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");
@@ -169,14 +176,14 @@ namespace BackendGastos.Service.Services
                 flag = false;
             }
 
-            var categoria = await _subCategoriaGastoRepository.GetCategoriaGastoById(insertUpdateDto.CategoriaGastoId);
+            var categoria = await _categoriaGastoRepository.GetActiveById(insertUpdateDto.CategoriaGastoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Gasto no existe");
                 flag = false;
             }
 
-            var user = await _subCategoriaGastoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");

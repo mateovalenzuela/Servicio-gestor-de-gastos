@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public interface IMonedaRepository : IRepository<GastosMonedum>
+    public interface IUsuarioRepository
     {
-        IEnumerable<GastosMonedum> Search(Func<GastosMonedum, bool> filter);
-
+        public Task<AuthenticationUsuario?> GetActiveById(long id);
     }
 }

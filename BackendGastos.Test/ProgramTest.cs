@@ -35,11 +35,36 @@ namespace BackendGastos.Test
                 .Build();
 
             // Services
+
+            // CategoriaIngreso
             builder.AddScoped<ICategoriaIngresoService, CategoriaIngresoService>();
+
+            // CategoriaGasto
             builder.AddScoped<ICategoriaGastoService, CategoriaGastoService>();
+
+            // SubCategoriaIngreso
             builder.AddScoped<ISubCategoriaIngresoService, SubCategoriaIngresoService>();
+            builder.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
+            builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+            // SubCategoriaGasto
             builder.AddScoped<ISubCategoriaGastoService, SubCategoriaGastoService>();
+            builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
+            builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+            // Ingreso
             builder.AddScoped<IIngresoService, IngresoService>();
+            builder.AddScoped<ISubCategoriaIngresoRepository, SubCategoriaIngresoRepository>();
+            builder.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
+            builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+            // Gasto
+            builder.AddScoped<IGastoService, GastoService>();
+            builder.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
+            builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
+            builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+
 
 
             // Validators 
@@ -65,6 +90,8 @@ namespace BackendGastos.Test
             builder.AddScoped<ISubCategoriaIngresoRepository, SubCategoriaIngresoRepository>();
             builder.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoRepository>();
             builder.AddScoped<IIngresoRepository, IngresoRepository>();
+            builder.AddScoped<IMonedaRepository, MonedaRepository>();
+            builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
 
 

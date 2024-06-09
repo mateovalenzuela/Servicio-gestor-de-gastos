@@ -83,59 +83,6 @@ namespace BackendGastos.Repository.Repository
             _context.GastosIngresos.Attach(entity);
             _context.GastosIngresos.Entry(entity).State = EntityState.Modified;
         }
-
-        public async Task<GastosCategoriaigreso?> GetCategoriaIngresoById(long id)
-        {
-            var categoriaIngresos = await _context.GastosCategoriaigresos.FindAsync(id);
-            if (categoriaIngresos == null) return null;
-
-            if (categoriaIngresos.Baja == false)
-            {
-                return categoriaIngresos;
-            }
-
-            return null;
-        }
-
-        public async Task<AuthenticationUsuario?> GetUsuarioById(long id)
-        {
-            var user = await _context.AuthenticationUsuarios.FindAsync(id);
-            if (user == null) return null;
-
-            if (user.IsActive == true)
-            {
-                return user;
-            }
-
-            return null;
-        }
-
-        public async Task<GastosSubcategoriaingreso?> GetSubCategoriaIngresoById(long id)
-        {
-            var subcategoria = await _context.GastosSubcategoriaingresos.FindAsync(id);
-
-            if (subcategoria == null) return null;
-
-            if (subcategoria.Baja == false)
-            {
-                return subcategoria;
-            }
-            return null;           
-        }
-
-        public async Task<GastosMonedum?> GetMonedaById(long idMoneda)
-        {
-            var moneda = await _context.GastosMoneda.FindAsync(idMoneda);
-
-            if (moneda == null) return null;
-
-            if (moneda.Baja == false)
-            {
-                return moneda;
-            }
-            return null;
-        }
-
         public async Task<IEnumerable<GastosIngreso>> GetActiveByUserAndCategoriaIngreso(long idUser, long idCategoriaIngreso)
         {
             var ingresos = await _context.GastosIngresos.Where(c => c.Baja == false &&

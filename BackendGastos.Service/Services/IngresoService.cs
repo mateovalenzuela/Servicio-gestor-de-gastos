@@ -16,11 +16,25 @@ namespace BackendGastos.Service.Services
         private readonly IIngresoRepository _ingresoRepository;
         private readonly IMapper _mapper;
 
-        public IngresoService(IIngresoRepository ingresoRepository, IMapper mapper)
+        private readonly ISubCategoriaIngresoRepository _subCategoriaIngresoRepository;
+        private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IMonedaRepository _monedaRepository;
+
+        public IngresoService(IIngresoRepository ingresoRepository, 
+            IMapper mapper, 
+            ISubCategoriaIngresoRepository subCategoriaIngresoRepository, 
+            ICategoriaIngresoRepository categoriaIngresoRepository, 
+            IUsuarioRepository usuarioRepository, 
+            IMonedaRepository monedaRepository)
         {
-            Errors = new Dictionary<string, string>();
+            Errors = [];
             _ingresoRepository = ingresoRepository;
             _mapper = mapper;
+            _subCategoriaIngresoRepository = subCategoriaIngresoRepository;
+            _categoriaIngresoRepository = categoriaIngresoRepository;
+            _usuarioRepository = usuarioRepository;
+            _monedaRepository = monedaRepository;
         }
 
         public async Task<IngresoDto> Add(InsertUpdateIngresoDto insertUpdateDto)
@@ -28,9 +42,10 @@ namespace BackendGastos.Service.Services
             var ingreso = _mapper.Map<GastosIngreso>(insertUpdateDto);
             ingreso.FechaCreacion = DateTime.UtcNow;
 
-            ingreso.CategoriaIngreso = await _ingresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
-            ingreso.SubcategoriaIngreso = await _ingresoRepository.GetSubCategoriaIngresoById(insertUpdateDto.SubcategoriaIngresoId);
-            ingreso.Usuario = await _ingresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            ingreso.CategoriaIngreso = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
+            ingreso.SubcategoriaIngreso = await _subCategoriaIngresoRepository.GetActiveById(insertUpdateDto.SubcategoriaIngresoId);
+            ingreso.Usuario = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
+            ingreso.Moneda = await _monedaRepository.GetActiveById(insertUpdateDto.MonedaId);
 
             await _ingresoRepository.Add(ingreso);
             await _ingresoRepository.Save();
@@ -138,28 +153,28 @@ namespace BackendGastos.Service.Services
         {
             bool flag = true;
 
-            var categoria = await _ingresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
+            var categoria = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
-            var subcategoria = await _ingresoRepository.GetSubCategoriaIngresoById(insertUpdateDto.SubcategoriaIngresoId);
+            var subcategoria = await _subCategoriaIngresoRepository.GetActiveById(insertUpdateDto.SubcategoriaIngresoId);
             if (subcategoria == null)
             {
                 Errors.Add("Subcategoria", "La Subcategoria Ingreso no existe");
                 flag = false;
             }
 
-            var user = await _ingresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 
-            var moneda = await _ingresoRepository.GetMonedaById(insertUpdateDto.MonedaId);
+            var moneda = await _monedaRepository.GetActiveById(insertUpdateDto.MonedaId);
             if (moneda == null)
             {
                 Errors.Add("Moneda", "La Moneda no es valida");
@@ -173,28 +188,28 @@ namespace BackendGastos.Service.Services
         {
             bool flag = true;
 
-            var categoria = await _ingresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
+            var categoria = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
-            var subcategoria = await _ingresoRepository.GetSubCategoriaIngresoById(insertUpdateDto.SubcategoriaIngresoId);
+            var subcategoria = await _subCategoriaIngresoRepository.GetActiveById(insertUpdateDto.SubcategoriaIngresoId);
             if (subcategoria == null)
             {
                 Errors.Add("Subcategoria", "La Subcategoria Ingreso no existe");
                 flag = false;
             }
 
-            var user = await _ingresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");
                 flag = false;
             }
 
-            var moneda = await _ingresoRepository.GetMonedaById(insertUpdateDto.MonedaId);
+            var moneda = await _monedaRepository.GetActiveById(insertUpdateDto.MonedaId);
             if (moneda == null)
             {
                 Errors.Add("Moneda", "La Moneda no es valida");

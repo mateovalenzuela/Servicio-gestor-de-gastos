@@ -18,9 +18,5 @@ namespace BackendGastos.Repository.Repository
 
         IEnumerable<GastosSubcategoriagasto> Search(Func<GastosSubcategoriagasto, bool> filter);
 
-        public Task<GastosCategoriagasto> GetCategoriaGastoById(long id);
-
-        public Task<AuthenticationUsuario> GetUsuarioById(long id);
-        
     }
 }

@@ -16,11 +16,19 @@ namespace BackendGastos.Service.Services
         private readonly ISubCategoriaIngresoRepository _subCategoriaIngresoRepository;
         private readonly IMapper _mapper;
 
-        public SubCategoriaIngresoService(ISubCategoriaIngresoRepository subCategoriaIngresoRepository, IMapper mapper)
+        private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
+
+        public SubCategoriaIngresoService(ISubCategoriaIngresoRepository subCategoriaIngresoRepository, 
+            IMapper mapper, 
+            ICategoriaIngresoRepository categoriaIngresoRepository, 
+            IUsuarioRepository usuarioRepository)
         {
-            Errors = new Dictionary<string, string>();
+            Errors = [];
             _subCategoriaIngresoRepository = subCategoriaIngresoRepository;
             _mapper = mapper;
+            _categoriaIngresoRepository = categoriaIngresoRepository;
+            _usuarioRepository = usuarioRepository;
         }
 
         public async Task<SubCategoriaIngresoDto> Add(InsertUpdateSubCategoriaIngresoDto insertUpdateDto)
@@ -28,8 +36,8 @@ namespace BackendGastos.Service.Services
             var subCategoriaIngreso = _mapper.Map<GastosSubcategoriaingreso>(insertUpdateDto);
             subCategoriaIngreso.FechaCreacion = DateTime.UtcNow;
 
-            subCategoriaIngreso.CategoriaIngreso = await _subCategoriaIngresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
-            subCategoriaIngreso.Usuario = await _subCategoriaIngresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            subCategoriaIngreso.CategoriaIngreso = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
+            subCategoriaIngreso.Usuario = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
 
             await _subCategoriaIngresoRepository.Add(subCategoriaIngreso);
             await _subCategoriaIngresoRepository.Save();
@@ -142,14 +150,14 @@ namespace BackendGastos.Service.Services
                 flag = false;
             }
 
-            var categoria = await _subCategoriaIngresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
+            var categoria = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
-            var user = await _subCategoriaIngresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");
@@ -168,14 +176,14 @@ namespace BackendGastos.Service.Services
                 flag = false;
             }
 
-            var categoria = await _subCategoriaIngresoRepository.GetCategoriaIngresoById(insertUpdateDto.CategoriaIngresoId);
+            var categoria = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             if (categoria == null)
             {
                 Errors.Add("Categoria", "La Categoria Ingreso no existe");
                 flag = false;
             }
 
-            var user = await _subCategoriaIngresoRepository.GetUsuarioById(insertUpdateDto.UsuarioId);
+            var user = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
             if (user == null)
             {
                 Errors.Add("Usuario", "El Usuario no existe");

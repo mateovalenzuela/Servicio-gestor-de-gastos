@@ -25,32 +25,6 @@ namespace BackendGastos.Repository.Repository
             _context.GastosSubcategoriagastos.Remove(subCategoriaGasto);
         }
 
-        public async Task<GastosCategoriagasto> GetCategoriaGastoById(long id)
-        {
-            var categoriaGastos = await _context.GastosCategoriagastos.FindAsync(id);
-            if (categoriaGastos == null) return null;
-
-            if (categoriaGastos.Baja == false)
-            {
-                return categoriaGastos;
-            }
-
-            return null;
-        }
-
-        public async Task<AuthenticationUsuario> GetUsuarioById(long id)
-        {
-            var user = await _context.AuthenticationUsuarios.FindAsync(id);
-            if (user == null) return null;
-
-            if (user.IsActive == true)
-            {
-                return user;
-            }
-
-            return null;
-        }
-
         public async Task<IEnumerable<GastosSubcategoriagasto>> Get()
         {
             var subCategoriasGasto = await _context.GastosSubcategoriagastos.ToListAsync();
