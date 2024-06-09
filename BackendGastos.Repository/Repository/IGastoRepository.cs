@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BackendGastos.Repository.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    internal interface IGastoRepository<TEntity> : IRepository<TEntity>
+    public interface IGastoRepository: IRepository<GastosGasto>
     {
-        Task<IEnumerable<TEntity>> GetActiveByUser(long idUser);
+        Task<IEnumerable<GastosGasto>> GetActiveByUser(long idUser);
 
-        Task<IEnumerable<TEntity>> GetActiveByCategoriaGasto(long idCategoriaGasto);
+        Task<IEnumerable<GastosGasto>> GetActiveByCategoriaGasto(long idCategoriaGasto);
 
-        Task<IEnumerable<TEntity>> GetActiveBySubCategoriaGasto(long idSubCategoriaGasto);
+        Task<IEnumerable<GastosGasto>> GetActiveBySubCategoriaGasto(long idSubCategoriaGasto);
+
+        Task<IEnumerable<GastosGasto>> GetActiveByUserAndCategoriaGasto(long idUser, long idCategoriaGasto);
+
     }
 }

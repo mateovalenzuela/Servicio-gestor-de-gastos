@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Validator.Gasto
 {
-    internal class GastoValidator : AbstractValidator<GastoDto>
+    public class GastoValidator : AbstractValidator<GastoDto>
     {
         public GastoValidator()
         {

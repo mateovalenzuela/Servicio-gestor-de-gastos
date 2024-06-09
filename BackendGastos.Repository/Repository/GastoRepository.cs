@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
-    public class GastoRepository : IGastoRepository<GastosGasto>
+    public class GastoRepository : IGastoRepository
     {
         private ProyectoGastosTestContext _context;
+
         public GastoRepository(ProyectoGastosTestContext context)
         {
             _context = context;
@@ -65,6 +66,15 @@ namespace BackendGastos.Repository.Repository
         {
             var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
                                                                 g.UsuarioId == idUser
+                                                                ).ToListAsync();
+            return gastos;
+        }
+
+        public async Task<IEnumerable<GastosGasto>> GetActiveByUserAndCategoriaGasto(long idUser, long idCategoriaGasto)
+        {
+            var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
+                                                                g.UsuarioId == idUser &&        
+                                                                g.CategoriaGastoId == idCategoriaGasto
                                                                 ).ToListAsync();
             return gastos;
         }
