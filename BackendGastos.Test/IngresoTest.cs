@@ -263,11 +263,11 @@ namespace BackendGastos.Test
 
             // Assert
             var objectResult = Assert.IsType<OkObjectResult>(result.Result);
-            var actualSubCategorias = Assert.IsType<List<IngresoDto>>(objectResult.Value);
+            var actualIngresos = Assert.IsType<List<IngresoDto>>(objectResult.Value);
 
-            Assert.NotNull(actualSubCategorias);
-            Assert.Equal(expectedIngresos, actualSubCategorias);
-            Assert.Equal(expectedIngresos.Count, actualSubCategorias.Count);
+            Assert.NotNull(actualIngresos);
+            Assert.Equal(expectedIngresos, actualIngresos);
+            Assert.Equal(expectedIngresos.Count, actualIngresos.Count);
         }
 
 
@@ -307,7 +307,7 @@ namespace BackendGastos.Test
         }
 
         [Fact]
-        public async Task GetByUsuario_ReturnsSubCategoriaIngresoDtoList()
+        public async Task GetByUsuario_ReturnsIngresoDtoList()
         {
             // Arrange
             var expectedIngresos = await ArrangeAddSetup();
@@ -455,7 +455,7 @@ namespace BackendGastos.Test
 
 
         [Fact]
-        public async Task Add_ReturnsOk_WhenSubCategoriaIngresoDtoIsValid()
+        public async Task Add_ReturnsOk_WhenIngresoDtoIsValid()
         {
             // Arrange
             var _ = ArrangeAddSetup();
@@ -465,14 +465,14 @@ namespace BackendGastos.Test
 
             // Assert
             var okObjectResult = Assert.IsType<CreatedAtActionResult>(result.Result);
-            var actualSubCategoria = Assert.IsType<IngresoDto>(okObjectResult.Value);
+            var actualIngreso = Assert.IsType<IngresoDto>(okObjectResult.Value);
 
-            Assert.Equal(_createIngreso.Descripcion, actualSubCategoria.Descripcion);
-            Assert.Equal(_createIngreso.UsuarioId, actualSubCategoria.UsuarioId);
-            Assert.Equal(_createIngreso.CategoriaIngresoId, actualSubCategoria.CategoriaIngresoId);
-            Assert.Equal(_createIngreso.SubcategoriaIngresoId, actualSubCategoria.SubcategoriaIngresoId);
-            Assert.Equal(_createIngreso.MonedaId, actualSubCategoria.MonedaId);
-            Assert.Equal(_createIngreso.Importe, actualSubCategoria.Importe);
+            Assert.Equal(_createIngreso.Descripcion, actualIngreso.Descripcion);
+            Assert.Equal(_createIngreso.UsuarioId, actualIngreso.UsuarioId);
+            Assert.Equal(_createIngreso.CategoriaIngresoId, actualIngreso.CategoriaIngresoId);
+            Assert.Equal(_createIngreso.SubcategoriaIngresoId, actualIngreso.SubcategoriaIngresoId);
+            Assert.Equal(_createIngreso.MonedaId, actualIngreso.MonedaId);
+            Assert.Equal(_createIngreso.Importe, actualIngreso.Importe);
         }
 
 
@@ -494,7 +494,7 @@ namespace BackendGastos.Test
         }
 
         [Fact]
-        public async Task Put_ReturnsOk_WhenSubCategoriaIngresoDtoIsValid()
+        public async Task Put_ReturnsOk_WhenIngresoDtoIsValid()
         {
             // Arrange
             var insertedIngresos = await ArrangeAddSetup();
@@ -527,7 +527,7 @@ namespace BackendGastos.Test
         }
 
         [Fact]
-        public async Task Put_ReturnsBadRequest_WhenSubCategoriaIngresoDtoIsInvalid()
+        public async Task Put_ReturnsBadRequest_WhenIngresoDtoIsInvalid()
         {
             // Arrange
             var insertedIngresos = await ArrangeAddSetup();
@@ -593,9 +593,9 @@ namespace BackendGastos.Test
             Assert.Equal(updateCat.Descripcion, actualIngreso.Descripcion);
             Assert.Equal(updateCat.Importe, actualIngreso.Importe);
             Assert.Equal(updateCat.UsuarioId, actualIngreso.UsuarioId);
-            Assert.Equal(updateCat.CategoriaIngresoId, selectedIngreso.CategoriaIngresoId);
-            Assert.Equal(updateCat.SubcategoriaIngresoId, selectedIngreso.SubcategoriaIngresoId);
-            Assert.Equal(updateCat.MonedaId, selectedIngreso.MonedaId);
+            Assert.Equal(updateCat.CategoriaIngresoId, actualIngreso.CategoriaIngresoId);
+            Assert.Equal(updateCat.SubcategoriaIngresoId, actualIngreso.SubcategoriaIngresoId);
+            Assert.Equal(updateCat.MonedaId, actualIngreso.MonedaId);
         }
 
         [Fact]
@@ -617,7 +617,7 @@ namespace BackendGastos.Test
         }
 
         [Fact]
-        public async Task Delete_ReturnsNotFound_WhenSubCategoriaIngresoDtoNotExist()
+        public async Task Delete_ReturnsNotFound_WhenIngresoDtoNotExist()
         {
             var _ = await ArrangeAddSetup();
             var result = await _controller.Delete(100);
