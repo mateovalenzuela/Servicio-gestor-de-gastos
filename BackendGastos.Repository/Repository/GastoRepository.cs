@@ -47,6 +47,9 @@ namespace BackendGastos.Repository.Repository
         public async Task<GastosGasto> GetActiveById(long id)
         {
             var gasto = await _context.GastosGastos.FindAsync(id);
+
+            if (gasto == null) return null;
+
             if (gasto.Baja == false)
             {
                 return gasto;

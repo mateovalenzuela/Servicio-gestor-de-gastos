@@ -61,7 +61,7 @@ namespace BackendGastos.Controller.Controllers
         [HttpGet("subcategoriaGasto/{idSubCategoriaGasto}")]
         public async Task<ActionResult<GastoDto>> GetBySubCategoriaGasto(long idSubCategoriaGasto)
         {
-            var gastosDto = await _gastoService.GetByUserId(idSubCategoriaGasto);
+            var gastosDto = await _gastoService.GetBySubCategoriaGastoId(idSubCategoriaGasto);
             return gastosDto == null ? NotFound() : Ok(gastosDto);
         }
 
