@@ -1,0 +1,11 @@
+version: '3.4'
+name: tesis_proyect
+services:
+  backendgastos.controller:
+    container_name: gastos_service
+    image: ${DOCKER_REGISTRY-}backendgastoscontroller
+    build:
+      context: .
+      dockerfile: BackendGastos/Dockerfile
+    ports:
+        - "8081:8081" 

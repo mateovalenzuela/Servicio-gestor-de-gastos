@@ -14,7 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Repository", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Validator", "BackendGastos.Validator\BackendGastos.Validator.csproj", "{EA60CF89-E119-4F4D-A836-FF66317AAA35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackendGastos.Test", "BackendGastos.Test\BackendGastos.Test.csproj", "{C66D3FC7-BEE9-402C-911D-F6C9BF6FABAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendGastos.Test", "BackendGastos.Test\BackendGastos.Test.csproj", "{C66D3FC7-BEE9-402C-911D-F6C9BF6FABAD}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{44567ECB-3F75-4534-A7C0-3DCCA03BA90C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{C66D3FC7-BEE9-402C-911D-F6C9BF6FABAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C66D3FC7-BEE9-402C-911D-F6C9BF6FABAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C66D3FC7-BEE9-402C-911D-F6C9BF6FABAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44567ECB-3F75-4534-A7C0-3DCCA03BA90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44567ECB-3F75-4534-A7C0-3DCCA03BA90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44567ECB-3F75-4534-A7C0-3DCCA03BA90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44567ECB-3F75-4534-A7C0-3DCCA03BA90C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
