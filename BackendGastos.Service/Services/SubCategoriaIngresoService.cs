@@ -209,7 +209,7 @@ namespace BackendGastos.Service.Services
         public async Task<bool> Validate(InsertUpdateSubCategoriaIngresoDto insertUpdateDto)
         {
             bool flag = true;
-            if (_subCategoriaIngresoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion && s.Baja == false).Count() > 0)
+            if (_subCategoriaIngresoRepository.Search(s => s.UsuarioId == insertUpdateDto.UsuarioId && s.Baja == false && s.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
             {
                 Errors.Add("Descripcion", "La SubCategoria ya existe");
                 flag = false;
