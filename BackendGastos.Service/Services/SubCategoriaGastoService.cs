@@ -144,7 +144,8 @@ namespace BackendGastos.Service.Services
         {
             bool flag = true;
             if (_subCategoriaGastoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion &&
-                                                            id != s.Id).Count() > 0)
+                                                            id != s.Id &&
+                                                            s.Baja == false).Count() > 0)
             {
                 Errors.Add("Subcategoria", "La SubCategoria ya existe");
                 flag = false;
@@ -170,7 +171,7 @@ namespace BackendGastos.Service.Services
         public async Task<bool> Validate(InsertUpdateSubCategoriaGastoDto insertUpdateDto)
         {
             bool flag = true;
-            if (_subCategoriaGastoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
+            if (_subCategoriaGastoRepository.Search(s => s.Descripcion == insertUpdateDto.Descripcion && s.Baja == false).Count() > 0)
             {
                 Errors.Add("Descripcion", "La SubCategoria ya existe");
                 flag = false;
