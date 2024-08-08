@@ -52,6 +52,16 @@ namespace BackendGastos.Controller.Controllers
         }
 
 
+        // GET api/<SubCategoriaGastoController>/groupByCategoriaGastoByUsuario/5
+        [HttpGet("groupByCategoriaGastoByUsuario/{idUser}")]
+        public async Task<ActionResult<CategoriaGastoYSubCategoriasGastoDto>> GetGroupByCategoriaGastoByUser(long idUser)
+        {
+            var categoriaYSubCategoriaGastoDto = await _subCategoriaGastoService.GetActiveGroupByCategoriaGastoByUser(idUser);
+
+            return categoriaYSubCategoriaGastoDto.Count() == 0 ? NotFound() : Ok(categoriaYSubCategoriaGastoDto);
+        }
+
+
         // GET api/<SubCategoriaGastoController>/categoriaGasto/5
         [HttpGet("categoriaGasto/{idCategoriaGasto}")]
         public async Task<ActionResult<SubCategoriaGastoDto>> GetByCategoriaGasto(long idCategoriaGasto)

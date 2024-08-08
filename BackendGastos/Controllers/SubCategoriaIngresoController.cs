@@ -1,4 +1,5 @@
-﻿using BackendGastos.Service.DTOs.SubCategoriaIngreso;
+﻿using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,15 @@ namespace BackendGastos.Controller.Controllers
             var subCategoriaIngresoDto = await _subCategoriaIngresoService.GetActiveByUser(idUser);
 
             return subCategoriaIngresoDto == null ? NotFound() : Ok(subCategoriaIngresoDto);
+        }
+
+        // GET api/<SubCategoriaIngresoController>/groupByCategoriaIngresoByUsuario/5
+        [HttpGet("groupByCategoriaIngresoByUsuario/{idUser}")]
+        public async Task<ActionResult<CategoriaIngresoYSubCategoriasIngresoDto>> GetGroupByCategoriaIngresoByUser(long idUser)
+        {
+            var categoriaYSubCategoriaIngresoDto = await _subCategoriaIngresoService.GetActiveGroupByCategoriaIngresoByUser(idUser);
+
+            return categoriaYSubCategoriaIngresoDto.Count() == 0 ? NotFound() : Ok(categoriaYSubCategoriaIngresoDto);
         }
 
         // GET api/<SubCategoriaIngresoController>/categoriaIngreso/5

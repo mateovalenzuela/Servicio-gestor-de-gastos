@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BackendGastos.Repository.Repository;
 using AutoMapper;
 using BackendGastos.Repository.Models;
+using BackendGastos.Service.DTOs.SubCategoriaGasto;
 
 namespace BackendGastos.Service.Services
 {
@@ -95,6 +96,43 @@ namespace BackendGastos.Service.Services
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<CategoriaIngresoYSubCategoriasIngresoDto>> GetActiveGroupByCategoriaIngresoByUser(long idUser)
+        {
+            var categoriasIngresoList = await _categoriaIngresoRepository.GetActive();
+
+            var subCategoriasIngresoList = await _subCategoriaIngresoRepository.GetActiveByUser(idUser);
+
+            var subCategoriasIngresoDto = new List<SubCategoriaIngresoDto>();
+
+            if (subCategoriasIngresoList.Count() > 0)
+            {
+                subCategoriasIngresoDto = subCategoriasIngresoList.Select(s => _mapper.Map<SubCategoriaIngresoDto>(s)).ToList();
+            }
+
+            var categoriaYSubCategoriaIngresoDto = new List<CategoriaIngresoYSubCategoriasIngresoDto>();
+
+            foreach (var categoria in categoriasIngresoList)
+            {
+                var subcategorias = new List<SubCategoriaIngresoDto>();
+
+                if (subCategoriasIngresoDto.Count > 0)
+                {
+                    subcategorias = subCategoriasIngresoDto.Where(s => s.CategoriaIngresoId == categoria.Id).ToList();
+                }
+
+                var dto = new CategoriaIngresoYSubCategoriasIngresoDto()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    SubCategorias = subcategorias
+                };
+
+                categoriaYSubCategoriaIngresoDto.Add(dto);
+            }
+
+            return categoriaYSubCategoriaIngresoDto;
         }
 
         public async Task<IEnumerable<SubCategoriaIngresoDto>> GetActiveByCategoriaIngreso(long idCategoriaIngreso)

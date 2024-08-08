@@ -2,6 +2,7 @@
 using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -95,6 +96,43 @@ namespace BackendGastos.Service.Services
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<CategoriaGastoYSubCategoriasGastoDto>> GetActiveGroupByCategoriaGastoByUser(long idUser)
+        {
+            var categoriasGastoList = await _categoriaGastoRepository.GetActive();
+
+            var subCategoriasGastoList = await _subCategoriaGastoRepository.GetActiveByUser(idUser);
+
+            var subCategoriasGastoDto = new List<SubCategoriaGastoDto>();
+
+            if (subCategoriasGastoList.Count() > 0)
+            {
+                subCategoriasGastoDto = subCategoriasGastoList.Select(s => _mapper.Map<SubCategoriaGastoDto>(s)).ToList();
+            }
+
+            var categoriaYSubCategoriaGastoDto = new List<CategoriaGastoYSubCategoriasGastoDto>();
+
+            foreach (var categoria in categoriasGastoList)
+            {
+                var subcategorias = new List<SubCategoriaGastoDto>();
+
+                if (subCategoriasGastoDto.Count > 0)
+                {
+                    subcategorias = subCategoriasGastoDto.Where(s => s.CategoriaGastoId == categoria.Id).ToList();
+                }
+                
+                var dto = new CategoriaGastoYSubCategoriasGastoDto()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    SubCategorias = subcategorias
+                };
+
+                categoriaYSubCategoriaGastoDto.Add(dto);
+            }
+
+            return categoriaYSubCategoriaGastoDto;
         }
 
         public async Task<IEnumerable<SubCategoriaGastoDto>> GetActiveByUserAndCategoriaGasto(long idUser, long idSubCategoriaGasto)
