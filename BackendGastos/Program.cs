@@ -19,6 +19,9 @@ using BackendGastos.Validator.Gasto;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configurar para leer variables de entorno
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container.
 
 

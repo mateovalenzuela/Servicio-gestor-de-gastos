@@ -7,7 +7,7 @@
     <ProjectGuid>44567ecb-3f75-4534-a7c0-3dcca03ba90c</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>backendgastos.controller</DockerServiceName>
+    <DockerServiceName>gastos</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

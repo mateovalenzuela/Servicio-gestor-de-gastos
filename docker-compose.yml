@@ -1,11 +1,61 @@
 version: '3.4'
 name: tesis_proyect
 services:
-  backendgastos.controller:
+  gastos:
     container_name: gastos_service
-    image: ${DOCKER_REGISTRY-}backendgastoscontroller
+    image: gastos_service
     build:
       context: .
       dockerfile: BackendGastos/Dockerfile
     ports:
         - "8081:8081" 
+    depends_on:
+      - postgres
+
+  autenticacion:
+    image: user_service
+
+    build:
+      context: ../djangoProject
+      dockerfile: ../djangoProject/Dockerfile
+
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - HOST_GASTOS_SERVICE=https://gastos:8081/
+      - SECRET_KEY=${SECRET_KEY}
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - DATABASE_HOST=${PG_DB_HOST}
+      - POSTGRES_USER=${PG_DB_USER}
+      - POSTGRES_PASSWORD=${PG_DB_PASSWORD}
+      - POSTGRES_DB=${PG_DB_DEFAULT}
+    volumes:
+      - tesis-data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+
+volumes:
+  tesis-data:
