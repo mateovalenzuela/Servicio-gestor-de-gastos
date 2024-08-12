@@ -165,7 +165,7 @@ namespace BackendGastos.Test
 
         }
 
-        private async Task<List<IngresoDto>> ArrangeAddSetup()
+        private async Task<IEnumerable<IngresoDto>> ArrangeAddSetup()
         {
             var usuarios = new List<AuthenticationUsuario>
             {
@@ -204,9 +204,8 @@ namespace BackendGastos.Test
             var addedIngreso5 = await servicioIngreso.Add(_validIngreso5);
             var addedIngreso6 = await servicioIngreso.Add(_validIngreso6);
 
-            var addedIngresos = new List<IngresoDto> {addedIngreso, addedIngreso2, addedIngreso3, 
-                                                    addedIngreso4, addedIngreso5, addedIngreso6};
-            return addedIngresos;
+            var addedIngresos = await servicioIngreso.Get();
+            return addedIngresos.ToList();
         }
 
         [Fact]
@@ -321,7 +320,7 @@ namespace BackendGastos.Test
             var actualIngresos = Assert.IsType<List<IngresoDto>>(objectResult.Value);
 
             Assert.NotNull(actualIngresos);
-            Assert.Equal(expectedIngresos.Count, actualIngresos.Count);
+            Assert.Equal(expectedIngresos.Count(), actualIngresos.Count);
             Assert.Equal(expectedIngresos, actualIngresos);
         }
 
