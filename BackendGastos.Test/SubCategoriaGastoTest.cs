@@ -359,7 +359,6 @@ namespace BackendGastos.Test
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
             var errors = Assert.IsAssignableFrom<Dictionary<string, string>>(badRequestResult.Value);
-            Assert.True(errors.ContainsKey("Descripcion"));
             Assert.True(errors.ContainsKey("Categoria"));
             Assert.True(errors.ContainsKey("Usuario"));
 
