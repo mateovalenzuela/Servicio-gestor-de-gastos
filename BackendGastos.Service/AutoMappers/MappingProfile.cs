@@ -32,10 +32,16 @@ namespace BackendGastos.Service.AutoMappers
             CreateMap<GastosSubcategoriagasto, SubCategoriaGastoDto>();
             // Ingreso
             CreateMap<InsertUpdateIngresoDto, GastosIngreso>();
-            CreateMap<GastosIngreso, IngresoDto>();
+            CreateMap<GastosIngreso, IngresoDto>()
+                .ForMember(dest => dest.CategoriaIngresoDescripcion, opt => opt.MapFrom(src => src.CategoriaIngreso.Descripcion))
+                .ForMember(dest => dest.SubcategoriaIngresoDescripcion, opt => opt.MapFrom(src => src.SubcategoriaIngreso.Descripcion))
+                .ForMember(dest => dest.FechaCreacion, opt => opt.MapFrom(src => src.FechaCreacion.ToString("dd-MM-yyyy HH:mm:ss")));
             // Gasto
             CreateMap<InsertUpdateGastoDto, GastosGasto>();
-            CreateMap<GastosGasto, GastoDto>();
+            CreateMap<GastosGasto, GastoDto>()
+                .ForMember(dest => dest.CategoriaGastoDescripcion, opt => opt.MapFrom(src => src.CategoriaGasto.Descripcion))
+                .ForMember(dest => dest.SubCategoriaGastoDescripcion, opt => opt.MapFrom(src => src.SubcategoriaGasto.Descripcion))
+                .ForMember(dest => dest.FechaCreacion, opt => opt.MapFrom(src => src.FechaCreacion.ToString("dd-MM-yyyy HH:mm:ss")));
         }
     }
 }

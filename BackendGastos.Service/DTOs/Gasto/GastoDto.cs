@@ -12,11 +12,17 @@ namespace BackendGastos.Service.DTOs.Gasto
 
         public long CategoriaGastoId { get; set; }
 
+        public string CategoriaGastoDescripcion { get; set; }
+
         public long MonedaId { get; set; }
 
         public long SubcategoriaGastoId { get; set; }
 
+        public string SubCategoriaGastoDescripcion { get; set; }
+
         public long UsuarioId { get; set; }
+
+        public string FechaCreacion { get; set; }
 
 
         public bool Equals(GastoDto other)
@@ -27,14 +33,19 @@ namespace BackendGastos.Service.DTOs.Gasto
                    Importe == other.Importe &&
                    UsuarioId == other.UsuarioId &&
                    CategoriaGastoId == other.CategoriaGastoId &&
+                   CategoriaGastoDescripcion == other.CategoriaGastoDescripcion &&
                    SubcategoriaGastoId == other.SubcategoriaGastoId &&
+                   SubCategoriaGastoDescripcion == other.SubCategoriaGastoDescripcion &&
+                   FechaCreacion == other.FechaCreacion &&
                    MonedaId == other.MonedaId;
         }
 
         public override bool Equals(object obj) => Equals(obj as GastoDto);
 
         public override int GetHashCode() =>
-            HashCode.Combine(Id, Descripcion, Importe, UsuarioId, CategoriaGastoId, SubcategoriaGastoId, MonedaId);
+            HashCode.Combine(Id, Descripcion, Importe, UsuarioId, 
+                            CategoriaGastoId, SubcategoriaGastoId,
+                            FechaCreacion, MonedaId);
 
 
     }

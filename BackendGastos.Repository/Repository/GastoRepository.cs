@@ -34,13 +34,21 @@ namespace BackendGastos.Repository.Repository
             => await _context.GastosGastos.ToListAsync();
 
         public async Task<IEnumerable<GastosGasto>> GetActive()
-            => await _context.GastosGastos.Where(g => g.Baja == false).ToListAsync();
+            => await _context.GastosGastos
+            .Where(g => g.Baja == false)
+            .Include(g => g.CategoriaGasto)
+            .Include(g => g.SubcategoriaGasto)
+            .OrderByDescending(c => c.Id)
+            .ToListAsync();
 
         public async Task<IEnumerable<GastosGasto>> GetActiveByCategoriaGasto(long idCategoriaGasto)
         {
-            var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
-                                                                g.CategoriaGastoId == idCategoriaGasto
-                                                                ).ToListAsync();
+            var gastos = await _context.GastosGastos
+                .Where(g => g.Baja == false && g.CategoriaGastoId == idCategoriaGasto)
+                .Include(g => g.CategoriaGasto)
+                .Include(g => g.SubcategoriaGasto)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return gastos;
         }
 
@@ -59,26 +67,34 @@ namespace BackendGastos.Repository.Repository
 
         public async Task<IEnumerable<GastosGasto>> GetActiveBySubCategoriaGasto(long idSubCategoriaGasto)
         {
-            var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
-                                                                g.SubcategoriaGastoId == idSubCategoriaGasto
-                                                                ).ToListAsync();
+            var gastos = await _context.GastosGastos
+                .Where(g => g.Baja == false && g.SubcategoriaGastoId == idSubCategoriaGasto)
+                .Include(g => g.CategoriaGasto)
+                .Include(g => g.SubcategoriaGasto)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return gastos;
         }
 
         public async Task<IEnumerable<GastosGasto>> GetActiveByUser(long idUser)
         {
-            var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
-                                                                g.UsuarioId == idUser
-                                                                ).ToListAsync();
+            var gastos = await _context.GastosGastos
+                .Where(g => g.Baja == false && g.UsuarioId == idUser)
+                .Include(g => g.CategoriaGasto)
+                .Include(g => g.SubcategoriaGasto)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return gastos;
         }
 
         public async Task<IEnumerable<GastosGasto>> GetActiveByUserAndCategoriaGasto(long idUser, long idCategoriaGasto)
         {
-            var gastos = await _context.GastosGastos.Where(g => g.Baja == false &&
-                                                                g.UsuarioId == idUser &&        
-                                                                g.CategoriaGastoId == idCategoriaGasto
-                                                                ).ToListAsync();
+            var gastos = await _context.GastosGastos
+                .Where(g => g.Baja == false && g.UsuarioId == idUser && g.CategoriaGastoId == idCategoriaGasto)
+                .Include(g => g.CategoriaGasto)
+                .Include(g => g.SubcategoriaGasto)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return gastos;
         }
 

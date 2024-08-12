@@ -30,16 +30,28 @@ namespace BackendGastos.Repository.Repository
             => _context.GastosIngresos.Remove(entity);
 
         public async Task<IEnumerable<GastosIngreso>> Get()
-            => await _context.GastosIngresos.ToListAsync();
+            => await _context.GastosIngresos
+            .Include(c => c.CategoriaIngreso)
+            .Include(c => c.SubcategoriaIngreso)
+            .OrderByDescending(c => c.Id)
+            .ToListAsync();
 
         public async Task<IEnumerable<GastosIngreso>> GetActive()
-            => await _context.GastosIngresos.Where(c => c.Baja == false).ToListAsync();
+            => await _context.GastosIngresos
+            .Where(c => c.Baja == false)
+            .Include(c => c.CategoriaIngreso)
+            .Include(c => c.SubcategoriaIngreso)
+            .OrderByDescending(c => c.Id)
+            .ToListAsync();
 
         public async Task<IEnumerable<GastosIngreso>> GetActiveByCategoriaIngreso(long idCategoriaIngreso)
         {
-            var ingresos = await _context.GastosIngresos.Where(c => c.Baja == false &&
-                                                                    c.CategoriaIngresoId == idCategoriaIngreso
-                                                                    ).ToListAsync();
+            var ingresos = await _context.GastosIngresos
+                .Where(c => c.Baja == false && c.CategoriaIngresoId == idCategoriaIngreso)
+                .Include(c => c.CategoriaIngreso)
+                .Include(c => c.SubcategoriaIngreso)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return ingresos;
         }
 
@@ -58,17 +70,23 @@ namespace BackendGastos.Repository.Repository
 
         public async Task<IEnumerable<GastosIngreso>> GetActiveBySubCategoriaIngreso(long idSubCategoriaIngreso)
         {
-            var ingresos = await _context.GastosIngresos.Where(c => c.Baja == false &&
-                                                                    c.SubcategoriaIngresoId == idSubCategoriaIngreso
-                                                                    ).ToListAsync();
+            var ingresos = await _context.GastosIngresos
+                .Where(c => c.Baja == false && c.SubcategoriaIngresoId == idSubCategoriaIngreso)
+                .Include(c => c.CategoriaIngreso)
+                .Include(c => c.SubcategoriaIngreso)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return ingresos;
         }
 
         public async Task<IEnumerable<GastosIngreso>> GetActiveByUser(long idUser)
         {
-            var ingresos = await _context.GastosIngresos.Where(c => c.Baja == false &&
-                                                                    c.UsuarioId == idUser
-                                                                    ).ToListAsync();
+            var ingresos = await _context.GastosIngresos
+                .Where(c => c.Baja == false && c.UsuarioId == idUser)
+                .Include(c => c.CategoriaIngreso)
+                .Include(c => c.SubcategoriaIngreso)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return ingresos;
         }
 
@@ -85,10 +103,12 @@ namespace BackendGastos.Repository.Repository
         }
         public async Task<IEnumerable<GastosIngreso>> GetActiveByUserAndCategoriaIngreso(long idUser, long idCategoriaIngreso)
         {
-            var ingresos = await _context.GastosIngresos.Where(c => c.Baja == false &&
-                                                                    c.UsuarioId == idUser &&
-                                                                    c.CategoriaIngresoId == idCategoriaIngreso
-                                                                    ).ToListAsync();
+            var ingresos = await _context.GastosIngresos
+                .Where(c => c.Baja == false && c.UsuarioId == idUser && c.CategoriaIngresoId == idCategoriaIngreso)
+                .Include(c => c.CategoriaIngreso)
+                .Include(c => c.SubcategoriaIngreso)
+                .OrderByDescending(c => c.Id)
+                .ToListAsync();
             return ingresos;
         }
     }
