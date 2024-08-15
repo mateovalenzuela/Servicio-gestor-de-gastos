@@ -61,6 +61,9 @@ builder.Services.AddScoped<ISubCategoriaGastoRepository, SubCategoriaGastoReposi
 builder.Services.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
+//Transaccion
+builder.Services.AddScoped<ITransaccionService, TransaccionService>();
+
 
 // Validators 
 // CategoriaIngreso
@@ -92,6 +95,7 @@ builder.Services.AddScoped<IIngresoRepository, IngresoRepository>();
 builder.Services.AddScoped<IGastoRepository, GastoRepository>();
 builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<ITransaccionRepository, TransaccionRepository>();
 
 
 
