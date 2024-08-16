@@ -66,5 +66,27 @@ namespace BackendGastos.Repository.Repository
 
             return listaDeTransaciones;
         }
+
+        public async Task<Dictionary<string, decimal>> GetImportesGastosEIngresos(long idUser)
+        {
+            var importeGastos = await _context.GastosGastos
+                .Where(g => g.UsuarioId == idUser && g.Baja == false)
+                .Select(g => g.Importe)
+                .SumAsync();
+
+            var importeIngresos = await _context.GastosIngresos
+                .Where(i => i.UsuarioId == idUser && i.Baja == false)
+                .Select(i => i.Importe)
+                .SumAsync();
+
+            var dicImportes = new Dictionary<string, decimal>
+            {
+                { "ImporteGastos", importeGastos },
+                { "ImporteIngresos", importeIngresos },
+                { "ImporteTotal", importeIngresos - importeGastos }
+            };
+
+            return dicImportes;
+        }
     }
 }

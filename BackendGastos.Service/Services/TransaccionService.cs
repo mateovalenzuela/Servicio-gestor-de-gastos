@@ -65,5 +65,18 @@ namespace BackendGastos.Service.Services
 
             return transaccionesDtos;
         }
+
+        public async Task<ImporteTransaccionDto> GetImportes(long idUser)
+        {
+            var importes = await _repository.GetImportesGastosEIngresos(idUser);
+
+            var importeDto = new ImporteTransaccionDto
+            {
+                ImporteGastos = importes["ImporteGastos"],
+                ImporteIngresos = importes["ImporteIngresos"],
+                ImporteTotal = importes["ImporteTotal"],
+            };
+            return importeDto;
+        }
     }
 }

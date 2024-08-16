@@ -22,6 +22,10 @@ namespace BackendGastos.Controller.Controllers
         [HttpGet("usuario/{idUser}/cantidad/{cantidad}")]
         public async Task<IEnumerable<TransaccionDto>> GetByUserAndCatidad(long idUser, int cantidad)
             => await _transaccionService.GetGastosEIngresos(idUser, cantidad);
+
+        [HttpGet("importes/usuario/{idUser}")]
+        public async Task<ActionResult<ImporteTransaccionDto>> GetImportes(long idUser)
+            => await _transaccionService.GetImportes(idUser);
             
     }
 }
