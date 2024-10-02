@@ -16,6 +16,8 @@ using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Validator.Ingreso;
 using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Validator.Gasto;
+using BackendGastos.Service.DTOs.Reporte;
+using BackendGastos.Validator.Reporte;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +66,11 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 //Transaccion
 builder.Services.AddScoped<ITransaccionService, TransaccionService>();
 
+// Reporte
+builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUtilidadesService, UtilidadesService>();
+
 
 // Validators 
 // CategoriaIngreso
@@ -84,6 +91,8 @@ builder.Services.AddScoped<IValidator<IngresoDto>, IngresoValidator>();
 // Gasto
 builder.Services.AddScoped<IValidator<InsertUpdateGastoDto>, InsertUpdateGastoValidator>();
 builder.Services.AddScoped<IValidator<GastoDto>, GastoValidator>();
+// Reporte
+builder.Services.AddScoped<IValidator<ObtenerReporteDto>, ObtenerReporteDtoValidator>();
 
 
 // Repository
@@ -96,6 +105,7 @@ builder.Services.AddScoped<IGastoRepository, GastoRepository>();
 builder.Services.AddScoped<IMonedaRepository, MonedaRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<ITransaccionRepository, TransaccionRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 
 
 
