@@ -135,6 +135,44 @@ namespace BackendGastos.Service.Services
             return categoriaYSubCategoriaGastoDto;
         }
 
+        public async Task<IEnumerable<CategoriaGastoYSubCategoriasGastoDto>> GetActiveGroupByCategoriaGastoWithAmountByUser(long idUser)
+        {
+            var categoriasGastoWithAmountList = await _categoriaGastoRepository.GetActiveWithAmount(idUser);
+
+            var subCategoriasGastoList = await _subCategoriaGastoRepository.GetActiveByUser(idUser);
+
+            var subCategoriasGastoDto = new List<SubCategoriaGastoDto>();
+
+            if (subCategoriasGastoList.Count() > 0)
+            {
+                subCategoriasGastoDto = subCategoriasGastoList.Select(s => _mapper.Map<SubCategoriaGastoDto>(s)).ToList();
+            }
+
+            var categoriaYSubCategoriaGastoDto = new List<CategoriaGastoYSubCategoriasGastoDto>();
+
+            foreach (var categoria in categoriasGastoWithAmountList)
+            {
+                var subcategorias = new List<SubCategoriaGastoDto>();
+
+                if (subCategoriasGastoDto.Count > 0)
+                {
+                    subcategorias = subCategoriasGastoDto.Where(s => s.CategoriaGastoId == categoria.Id).ToList();
+                }
+
+                var dto = new CategoriaGastoYSubCategoriasGastoDto()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    Importe = categoria.ImporteTotal,
+                    SubCategorias = subcategorias
+                };
+
+                categoriaYSubCategoriaGastoDto.Add(dto);
+            }
+
+            return categoriaYSubCategoriaGastoDto;
+        }
+
         public async Task<IEnumerable<SubCategoriaGastoDto>> GetActiveByUserAndCategoriaGasto(long idUser, long idSubCategoriaGasto)
         {
             var subCategoriasGastoList = await _subCategoriaGastoRepository.GetActiveByUserAndCategoriaGasto(idUser, idSubCategoriaGasto);

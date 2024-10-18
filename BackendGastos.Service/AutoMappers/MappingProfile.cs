@@ -21,9 +21,11 @@ namespace BackendGastos.Service.AutoMappers
             // CategoriaIngreso
             CreateMap<InsertUpdateCategoriaIngresoDto, GastosCategoriaigreso>();
             CreateMap<GastosCategoriaigreso, CategoriaIngresoDto>();
+            CreateMap<CategoriaingresoAmount, CategoriaIngresoWithAmountDto>();
             // CategoriaGasto
             CreateMap<InsertUpdateCategoriaGastoDto, GastosCategoriagasto>();
             CreateMap<GastosCategoriagasto, CategoriaGastoDto>();
+            CreateMap<CategoriagastoAmount, CategoriaGastoWithAmountDto>();
             // SubCategoriaIngreso
             CreateMap<InsertUpdateSubCategoriaIngresoDto, GastosSubcategoriaingreso>();
             CreateMap<GastosSubcategoriaingreso, SubCategoriaIngresoDto>();

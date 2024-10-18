@@ -1,5 +1,6 @@
 ﻿using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,5 +77,22 @@ namespace BackendGastos.Repository.Repository
 
         public IEnumerable<GastosCategoriagasto> Search(Func<GastosCategoriagasto, bool> filter)
             => _context.GastosCategoriagastos.Where(filter).ToList();
+
+        public async Task<IEnumerable<CategoriagastoAmount>> GetActiveWithAmount(long idUser)
+        {
+            var categoriasGasto = await _context.GastosCategoriagastos.Where(c => c.Baja == false)
+                .GroupJoin(
+                _context.GastosGastos.Where(g => g.UsuarioId == idUser && g.Baja == false),
+                categoria => categoria.Id,
+                gasto => gasto.CategoriaGastoId,
+                (categoria, gasto) => new CategoriagastoAmount()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    ImporteTotal = gasto.Sum(g => (decimal?)g.Importe) ?? 0 // Suma los importes de los gastos, si no hay, devuelve 0
+                }
+                ).ToListAsync();
+            return categoriasGasto;
+        }
     }
 }

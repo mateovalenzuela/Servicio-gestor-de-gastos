@@ -12,6 +12,8 @@ namespace BackendGastos.Service.DTOs.SubCategoriaGasto
 
         public string Descripcion { get; set; }
 
+        public decimal? Importe { get; set; }
+
         public virtual List<SubCategoriaGastoDto> SubCategorias { get; set; } = new List<SubCategoriaGastoDto>();
 }
 }

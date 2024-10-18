@@ -11,5 +11,7 @@ namespace BackendGastos.Service.Services
     {
         public bool Validate(InsertUpdateCategoriaGastoDto insertUpdateDto, long id);
         public bool Validate(InsertUpdateCategoriaGastoDto insertUpdateDto);
+
+        public Task<IEnumerable<CategoriaGastoWithAmountDto>> GetWithAmountDto(long idUser);
     }
 }

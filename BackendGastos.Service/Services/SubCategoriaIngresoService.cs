@@ -135,6 +135,45 @@ namespace BackendGastos.Service.Services
             return categoriaYSubCategoriaIngresoDto;
         }
 
+
+        public async Task<IEnumerable<CategoriaIngresoYSubCategoriasIngresoDto>> GetActiveGroupByCategoriaIngresoWithAmountByUser(long idUser)
+        {
+            var categoriasIngresoWithAmountList = await _categoriaIngresoRepository.GetActiveWithAmount(idUser);
+
+            var subCategoriasIngresoList = await _subCategoriaIngresoRepository.GetActiveByUser(idUser);
+
+            var subCategoriasIngresoDto = new List<SubCategoriaIngresoDto>();
+
+            if (subCategoriasIngresoList.Count() > 0)
+            {
+                subCategoriasIngresoDto = subCategoriasIngresoList.Select(s => _mapper.Map<SubCategoriaIngresoDto>(s)).ToList();
+            }
+
+            var categoriaYSubCategoriaIngresoDto = new List<CategoriaIngresoYSubCategoriasIngresoDto>();
+
+            foreach (var categoria in categoriasIngresoWithAmountList)
+            {
+                var subcategorias = new List<SubCategoriaIngresoDto>();
+
+                if (subCategoriasIngresoDto.Count > 0)
+                {
+                    subcategorias = subCategoriasIngresoDto.Where(s => s.CategoriaIngresoId == categoria.Id).ToList();
+                }
+
+                var dto = new CategoriaIngresoYSubCategoriasIngresoDto()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    Importe = categoria.ImporteTotal,
+                    SubCategorias = subcategorias
+                };
+
+                categoriaYSubCategoriaIngresoDto.Add(dto);
+            }
+
+            return categoriaYSubCategoriaIngresoDto;
+        }
+
         public async Task<IEnumerable<SubCategoriaIngresoDto>> GetActiveByCategoriaIngreso(long idCategoriaIngreso)
         {
             var subCategoriasIngresoList = await _subCategoriaIngresoRepository.GetActiveByCategoriaIngreso(idCategoriaIngreso);

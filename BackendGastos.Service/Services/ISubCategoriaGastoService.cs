@@ -19,6 +19,8 @@ namespace BackendGastos.Service.Services
 
         Task<IEnumerable<CategoriaGastoYSubCategoriasGastoDto>> GetActiveGroupByCategoriaGastoByUser(long idUser);
 
+        Task<IEnumerable<CategoriaGastoYSubCategoriasGastoDto>> GetActiveGroupByCategoriaGastoWithAmountByUser(long idUser);
+
         public Task<bool> Validate(InsertUpdateSubCategoriaGastoDto insertUpdateDto, long id);
         public Task<bool> Validate(InsertUpdateSubCategoriaGastoDto insertUpdateDto);
     }

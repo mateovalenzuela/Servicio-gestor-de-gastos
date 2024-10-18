@@ -21,5 +21,7 @@ namespace BackendGastos.Service.Services
 
         public Task<bool> Validate(InsertUpdateSubCategoriaIngresoDto insertUpdateDto, long id);
         public Task<bool> Validate(InsertUpdateSubCategoriaIngresoDto insertUpdateDto);
+
+        Task<IEnumerable<CategoriaIngresoYSubCategoriasIngresoDto>> GetActiveGroupByCategoriaIngresoWithAmountByUser(long idUser);
     }
 }

@@ -16,13 +16,15 @@ namespace BackendGastos.Service.Services
     public class CategoriaIngresoService : ICategoriaIngresoService
     {
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IMapper _mapper;
         public Dictionary<string, string> Errors { get; }
 
-        public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository, IMapper mapper)
+        public CategoriaIngresoService(ICategoriaIngresoRepository categoriaIngresoRepository, IMapper mapper, IUsuarioRepository usuarioRepository)
         {
             _categoriaIngresoRepository = categoriaIngresoRepository;
             _mapper = mapper;
+            _usuarioRepository = usuarioRepository;
             Errors = new Dictionary<string, string>();
         }
 
@@ -115,6 +117,24 @@ namespace BackendGastos.Service.Services
                 return false;
             }
             return true;
+        }
+
+        public async Task<IEnumerable<CategoriaIngresoWithAmountDto>> GetWithAmountDto(long idUser)
+        {
+            var userIsActive = await _usuarioRepository.IsActive(idUser);
+            if (!userIsActive)
+            {
+                return null;
+            }
+
+            var categoriasIngresoWithAmount = await _categoriaIngresoRepository.GetActiveWithAmount(idUser);
+
+            if (categoriasIngresoWithAmount != null)
+            {
+                var categoriaIngresoWithAmountDto = categoriasIngresoWithAmount.Select(cA => _mapper.Map<CategoriaIngresoWithAmountDto>(cA));
+                return categoriaIngresoWithAmountDto;
+            }
+            return null;
         }
     }
 }

@@ -61,6 +61,16 @@ namespace BackendGastos.Controller.Controllers
             return categoriaYSubCategoriaIngresoDto.Count() == 0 ? NotFound() : Ok(categoriaYSubCategoriaIngresoDto);
         }
 
+
+        // GET api/<SubCategoriaIngresoController>/groupByCategoriaIngresoWithAmountByUsuario/5
+        [HttpGet("groupByCategoriaIngresoWithAmountByUsuario/{idUser}")]
+        public async Task<ActionResult<CategoriaIngresoYSubCategoriasIngresoDto>> GetGroupByCategoriaIngresoWithAmountByUser(long idUser)
+        {
+            var categoriaYSubCategoriaIngresoWithAmountDto = await _subCategoriaIngresoService.GetActiveGroupByCategoriaIngresoWithAmountByUser(idUser);
+
+            return categoriaYSubCategoriaIngresoWithAmountDto.Count() == 0 ? NotFound() : Ok(categoriaYSubCategoriaIngresoWithAmountDto);
+        }
+
         // GET api/<SubCategoriaIngresoController>/categoriaIngreso/5
         [HttpGet("categoriaIngreso/{idCategoriaIngreso}")]
         public async Task<ActionResult<SubCategoriaIngresoDto>> GetByCategoriaIngreso(long idCategoriaIngreso)

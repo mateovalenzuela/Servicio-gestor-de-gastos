@@ -76,6 +76,23 @@ namespace BackendGastos.Repository.Repository
 
         public IEnumerable<GastosCategoriaigreso> Search(Func<GastosCategoriaigreso, bool> filter)
             => _context.GastosCategoriaigresos.Where(filter).ToList();
-        
+
+        public async Task<IEnumerable<CategoriaingresoAmount>> GetActiveWithAmount(long idUser)
+        {
+            var categoriasIngreso = await _context.GastosCategoriaigresos.Where(c => c.Baja == false)
+                .GroupJoin(
+                _context.GastosIngresos.Where(g => g.UsuarioId == idUser && g.Baja == false),
+                categoria => categoria.Id,
+                ingreso => ingreso.CategoriaIngresoId,
+                (categoria, ingreso) => new CategoriaingresoAmount()
+                {
+                    Id = categoria.Id,
+                    Descripcion = categoria.Descripcion,
+                    ImporteTotal = ingreso.Sum(g => (decimal?)g.Importe) ?? 0 // Suma los importes de los ingresos, si no hay, devuelve 0
+                }
+                ).ToListAsync();
+            return categoriasIngreso;
+        }
+
     }
 }
