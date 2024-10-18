@@ -104,6 +104,21 @@ namespace BackendGastos.Repository.Repository
         public async Task Save()
             => await _context.SaveChangesAsync();
 
+        public IEnumerable<GastosGasto> Search(Func<GastosGasto, bool> filter, int limit)
+            =>  _context.GastosGastos.Where(filter).Take(limit).ToList();
+
+        public async Task<IEnumerable<GastosGasto>> SearchActiveByDescripcionParcial(long idUser, string descripcion, int limit)
+        {
+            var gastos = await _context.GastosGastos
+                .Where(g => g.UsuarioId == idUser && g.Baja == false && g.Descripcion.ToLower().Contains(descripcion.ToLower()))
+                .GroupBy( g => g.Descripcion)
+                .Select(g => g.First())
+                .Take(limit)
+                .ToListAsync();
+
+            return gastos;
+        }
+
         public void Update(GastosGasto entity)
         {
             _context.GastosGastos.Attach(entity);

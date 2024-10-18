@@ -226,5 +226,20 @@ namespace BackendGastos.Service.Services
 
             return flag;
         }
+
+        public async Task<IEnumerable<GastoDto>> SearchByDescripcionParcial(long idUser, string descripcion)
+        {
+            var userIsActive = await _usuarioRepository.IsActive(idUser);
+
+            if (!userIsActive)
+            {
+                return null;
+            }
+            var limit = 5;
+            var gastos = await _gastoRepository.SearchActiveByDescripcionParcial(idUser, descripcion, limit);
+
+            var gastosDto = gastos.Select(g => _mapper.Map<GastoDto>(g));
+            return gastosDto;
+        }
     }
 }

@@ -111,5 +111,17 @@ namespace BackendGastos.Repository.Repository
                 .ToListAsync();
             return ingresos;
         }
+
+        public async Task<IEnumerable<GastosIngreso>> SearchActiveByDescripcionParcial(long idUser, string descripcion, int limit)
+        {
+            var ingresos = await _context.GastosIngresos
+                .Where(g => g.UsuarioId == idUser && g.Baja == false && g.Descripcion.ToLower().Contains(descripcion.ToLower()))
+                .GroupBy(g => g.Descripcion)
+                .Select(g => g.First())
+                .Take(limit)
+                .ToListAsync();
+
+            return ingresos;
+        }
     }
 }

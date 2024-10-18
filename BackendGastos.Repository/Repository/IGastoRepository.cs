@@ -17,5 +17,8 @@ namespace BackendGastos.Repository.Repository
 
         Task<IEnumerable<GastosGasto>> GetActiveByUserAndCategoriaGasto(long idUser, long idCategoriaGasto);
 
+        IEnumerable<GastosGasto> Search(Func<GastosGasto, bool> filter, int limit);
+
+        Task<IEnumerable<GastosGasto>> SearchActiveByDescripcionParcial(long idUser, string descripcion, int limit);
     }
 }

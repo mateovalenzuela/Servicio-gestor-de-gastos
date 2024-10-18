@@ -1,5 +1,8 @@
-﻿using BackendGastos.Service.DTOs.Ingreso;
+﻿using BackendGastos.Service.DTOs.Gasto;
+using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.Services;
+using BackendGastos.Validator.Gasto;
+using BackendGastos.Validator.Ingreso;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -46,6 +49,22 @@ namespace BackendGastos.Controller.Controllers
         public async Task<ActionResult<IngresoDto>> GetByUser(long idUser)
         {
             var ingresosDto = await _ingresoService.GetByUserId(idUser);
+            return ingresosDto == null ? NotFound() : Ok(ingresosDto);
+        }
+
+        // GET api/<IngresoController>/usuario/5/descripcion/sueldo
+        [HttpGet("usuario/{idUser}/descripcion/{descripcion}")]
+        public async Task<ActionResult<IngresoDto>> SearchByDescripcionParcial(long idUser, string descripcion)
+        {
+            var ingresoDto = new IngresoDto { Descripcion = descripcion };
+            var validationResult = await new SearchIngresoValidator().ValidateAsync(ingresoDto);
+
+            if (!validationResult.IsValid)
+            {
+                return NotFound(validationResult.Errors);
+            }
+
+            var ingresosDto = await _ingresoService.SearchByDescripcionParcial(idUser, descripcion);
             return ingresosDto == null ? NotFound() : Ok(ingresosDto);
         }
 

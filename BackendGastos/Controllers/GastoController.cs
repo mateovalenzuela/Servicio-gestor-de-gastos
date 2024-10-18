@@ -1,5 +1,6 @@
 ﻿using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Service.Services;
+using BackendGastos.Validator.Gasto;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +49,23 @@ namespace BackendGastos.Controller.Controllers
             var gastosDto = await _gastoService.GetByUserId(idUser);
             return gastosDto == null ? NotFound() : Ok(gastosDto);
         }
+
+        // GET api/<GastoController>/usuario/5/descripcion/comida
+        [HttpGet("usuario/{idUser}/descripcion/{descripcion}")]
+        public async Task<ActionResult<GastoDto>> SearchByDescripcionParcial(long idUser, string descripcion)
+        {
+            var gastoDto = new GastoDto { Descripcion = descripcion };
+            var validationResult = await new SearchGastoValidator().ValidateAsync(gastoDto);
+
+            if (!validationResult.IsValid)
+            {
+                return NotFound(validationResult.Errors);
+            }
+
+            var gastosDto = await _gastoService.SearchByDescripcionParcial(idUser, descripcion);
+            return gastosDto == null ? NotFound() : Ok(gastosDto);
+        }
+
 
         // GET api/<GastoController>/categoriaGasto/5
         [HttpGet("categoriaGasto/{idCategoriaGasto}")]

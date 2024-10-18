@@ -17,5 +17,7 @@ namespace BackendGastos.Service.Services
         Task<IEnumerable<GastoDto>> GetByUserAndCategoriaGasto(long idUser, long idCategoriaGasto);
         Task<bool> Validate(long id, InsertUpdateGastoDto insertUpdateDto);
         Task<bool> Validate(InsertUpdateGastoDto insertUpdateDto);
+
+        Task<IEnumerable<GastoDto>> SearchByDescripcionParcial(long idUser, string descripcion);
     }
 }

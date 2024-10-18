@@ -1,4 +1,5 @@
-﻿using BackendGastos.Service.DTOs.Ingreso;
+﻿using BackendGastos.Service.DTOs.Gasto;
+using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using System;
 using System.Collections.Generic;
@@ -17,5 +18,6 @@ namespace BackendGastos.Service.Services
         Task<bool> Validate(long id, InsertUpdateIngresoDto insertUpdateDto);
         Task<bool> Validate(InsertUpdateIngresoDto insertUpdateDto);
 
+        Task<IEnumerable<IngresoDto>> SearchByDescripcionParcial(long idUser, string descripcion);
     }
 }

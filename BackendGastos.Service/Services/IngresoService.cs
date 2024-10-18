@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
+using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Service.DTOs.Ingreso;
 using System;
 using System.Collections.Generic;
@@ -229,6 +230,21 @@ namespace BackendGastos.Service.Services
                 return ingresosDto;
             }
             return null;
+        }
+
+        public async Task<IEnumerable<IngresoDto>> SearchByDescripcionParcial(long idUser, string descripcion)
+        {
+            var userIsActive = await _usuarioRepository.IsActive(idUser);
+
+            if (!userIsActive)
+            {
+                return null;
+            }
+            var limit = 5;
+            var ingresos = await _ingresoRepository.SearchActiveByDescripcionParcial(idUser, descripcion, limit);
+
+            var ingresosDto = ingresos.Select(g => _mapper.Map<IngresoDto>(g));
+            return ingresosDto;
         }
     }
 }
