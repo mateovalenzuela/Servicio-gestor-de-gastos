@@ -1,4 +1,5 @@
 ﻿using BackendGastos.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,5 +26,8 @@ namespace BackendGastos.Repository.Repository
             }
             return null;
         }
+
+        public async Task<bool> IsActive(long id)
+            => await _context.AuthenticationUsuarios.AnyAsync(u => u.Id == id);
     }
 }
