@@ -117,11 +117,12 @@ namespace BackendGastos.Repository.Repository
             var ingresos = await _context.GastosIngresos
                 .Where(g => g.UsuarioId == idUser && g.Baja == false && g.Descripcion.ToLower().Contains(descripcion.ToLower()))
                 .GroupBy(g => g.Descripcion)
-                .Select(g => g.First())
+                .Select(g => g.OrderByDescending(x => x.Id).First()) // Ordena cada grupo por Id y selecciona el último
                 .Take(limit)
                 .ToListAsync();
 
             return ingresos;
         }
+
     }
 }
