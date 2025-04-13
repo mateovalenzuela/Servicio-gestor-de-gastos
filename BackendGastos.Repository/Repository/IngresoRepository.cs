@@ -1,17 +1,12 @@
 ﻿using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
     public class IngresoRepository : IIngresoRepository
     {
         private ProyectoGastosTestContext _context;
-        public IngresoRepository(ProyectoGastosTestContext context) 
+        public IngresoRepository(ProyectoGastosTestContext context)
         {
             _context = context;
         }

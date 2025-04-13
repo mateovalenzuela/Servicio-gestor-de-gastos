@@ -1,6 +1,5 @@
 ﻿using BackendGastos.Service.DTOs.Reporte;
 using BackendGastos.Service.Services;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,13 +11,11 @@ namespace BackendGastos.Controller.Controllers
     public class ReporteController : ControllerBase
     {
         private readonly IReporteService _reporteService;
-        private readonly IValidator<ObtenerReporteDto> _obtenerReporteValidator;
         private readonly IUtilidadesService _utilidadesService;
 
-        public ReporteController(IReporteService reporteService, IValidator<ObtenerReporteDto> obtenerReporteValidator, IUtilidadesService utilidadesService)
+        public ReporteController(IReporteService reporteService, IUtilidadesService utilidadesService)
         {
             _reporteService = reporteService;
-            _obtenerReporteValidator = obtenerReporteValidator;
             _utilidadesService = utilidadesService;
         }
 

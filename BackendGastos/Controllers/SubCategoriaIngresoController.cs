@@ -1,7 +1,5 @@
-﻿using BackendGastos.Service.DTOs.SubCategoriaGasto;
-using BackendGastos.Service.DTOs.SubCategoriaIngreso;
+﻿using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,21 +10,12 @@ namespace BackendGastos.Controller.Controllers
     [ApiController]
     public class SubCategoriaIngresoController : ControllerBase
     {
-
-        private readonly IValidator<SubCategoriaIngresoDto> _subCategoriaIngresoValidator;
-        private readonly IValidator<InsertUpdateSubCategoriaIngresoDto> _insertUpdateSubCategoriaIngresoValidator;
         private readonly ISubCategoriaIngresoService _subCategoriaIngresoService;
 
-        public SubCategoriaIngresoController(IValidator<SubCategoriaIngresoDto> subCategoriaIngresoValidator, 
-            IValidator<InsertUpdateSubCategoriaIngresoDto> insertUpdateSubCategoriaIngresoValidator, 
-            ISubCategoriaIngresoService subCategoriaIngresoService)
+        public SubCategoriaIngresoController(ISubCategoriaIngresoService subCategoriaIngresoService)
         {
-            _subCategoriaIngresoValidator = subCategoriaIngresoValidator;
-            _insertUpdateSubCategoriaIngresoValidator = insertUpdateSubCategoriaIngresoValidator;
             _subCategoriaIngresoService = subCategoriaIngresoService;
         }
-
-
 
 
         // GET: api/<SubCategoriaIngresoController>
@@ -36,7 +25,7 @@ namespace BackendGastos.Controller.Controllers
 
         // GET api/<SubCategoriaIngresoController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<SubCategoriaIngresoDto>> Get(long id) 
+        public async Task<ActionResult<SubCategoriaIngresoDto>> Get(long id)
         {
             var subCategoriaIngresoDto = await _subCategoriaIngresoService.GetById(id);
 
@@ -93,13 +82,6 @@ namespace BackendGastos.Controller.Controllers
         [HttpPost]
         public async Task<ActionResult<SubCategoriaIngresoDto>> Add(InsertUpdateSubCategoriaIngresoDto insertUpadateSubCategoriaIngresoDto)
         {
-            var validationResult = await _insertUpdateSubCategoriaIngresoValidator.ValidateAsync(insertUpadateSubCategoriaIngresoDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
             if (!await _subCategoriaIngresoService.Validate(insertUpadateSubCategoriaIngresoDto))
             {
                 return BadRequest(_subCategoriaIngresoService.Errors);
@@ -109,19 +91,12 @@ namespace BackendGastos.Controller.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = subCategoriaIngresoDto.Id }, subCategoriaIngresoDto);
         }
-        
+
 
         // PUT api/<SubCategoriaIngresoController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult<SubCategoriaIngresoDto>> Put(long id, InsertUpdateSubCategoriaIngresoDto insertUpdateSubCategoriaIngresoDto)
         {
-            var validationResult = await _insertUpdateSubCategoriaIngresoValidator.ValidateAsync(insertUpdateSubCategoriaIngresoDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
             if (!await _subCategoriaIngresoService.Validate(insertUpdateSubCategoriaIngresoDto))
             {
                 return BadRequest(_subCategoriaIngresoService.Errors);

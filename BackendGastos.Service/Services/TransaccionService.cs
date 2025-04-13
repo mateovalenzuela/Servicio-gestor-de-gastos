@@ -1,14 +1,8 @@
 ﻿using AutoMapper;
-using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.DTOs.Transaccion;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Service.Services
 {
@@ -23,7 +17,7 @@ namespace BackendGastos.Service.Services
             _mapper = mapper;
         }
         public async Task<IEnumerable<TransaccionDto>> GetGastosEIngresos(long idUser, int cantidad)
-        {            
+        {
             if (cantidad <= 0)
             {
                 cantidad = 0;
@@ -38,7 +32,7 @@ namespace BackendGastos.Service.Services
                 return transaccionesDtos;
             }
 
-            foreach(var transaccion in transacciones)
+            foreach (var transaccion in transacciones)
             {
                 var ingreso = new IngresoDto();
                 var gasto = new GastoDto();

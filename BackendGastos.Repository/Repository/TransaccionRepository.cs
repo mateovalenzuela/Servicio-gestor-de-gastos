@@ -1,10 +1,5 @@
 ﻿using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
@@ -25,7 +20,7 @@ namespace BackendGastos.Repository.Repository
                 .OrderByDescending(g => g.Id)
                 .ToListAsync();
 
-            var ingresos = await _context.GastosIngresos.Where(i =>  i.UsuarioId == idUser && i.Baja == false)
+            var ingresos = await _context.GastosIngresos.Where(i => i.UsuarioId == idUser && i.Baja == false)
                 .Include(i => i.CategoriaIngreso)
                 .Include(i => i.SubcategoriaIngreso)
                 .OrderByDescending(i => i.Id)
@@ -33,9 +28,9 @@ namespace BackendGastos.Repository.Repository
 
             var listaDeTransaciones = new List<GastosEIngresos>();
 
-            foreach(var gasto in gastos)
+            foreach (var gasto in gastos)
             {
-                var transaccion = new GastosEIngresos 
+                var transaccion = new GastosEIngresos
                 {
                     IsIngreso = false,
                     Gasto = gasto,

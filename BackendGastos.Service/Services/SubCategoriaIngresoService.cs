@@ -1,13 +1,7 @@
-﻿using BackendGastos.Service.DTOs.SubCategoriaIngreso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackendGastos.Repository.Repository;
-using AutoMapper;
+﻿using AutoMapper;
 using BackendGastos.Repository.Models;
-using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Repository.Repository;
+using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 
 namespace BackendGastos.Service.Services
 {
@@ -20,9 +14,9 @@ namespace BackendGastos.Service.Services
         private readonly ICategoriaIngresoRepository _categoriaIngresoRepository;
         private readonly IUsuarioRepository _usuarioRepository;
 
-        public SubCategoriaIngresoService(ISubCategoriaIngresoRepository subCategoriaIngresoRepository, 
-            IMapper mapper, 
-            ICategoriaIngresoRepository categoriaIngresoRepository, 
+        public SubCategoriaIngresoService(ISubCategoriaIngresoRepository subCategoriaIngresoRepository,
+            IMapper mapper,
+            ICategoriaIngresoRepository categoriaIngresoRepository,
             IUsuarioRepository usuarioRepository)
         {
             Errors = [];
@@ -35,7 +29,6 @@ namespace BackendGastos.Service.Services
         public async Task<SubCategoriaIngresoDto> Add(InsertUpdateSubCategoriaIngresoDto insertUpdateDto)
         {
             var subCategoriaIngreso = _mapper.Map<GastosSubcategoriaingreso>(insertUpdateDto);
-            subCategoriaIngreso.FechaCreacion = DateTime.UtcNow;
 
             subCategoriaIngreso.CategoriaIngreso = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             subCategoriaIngreso.Usuario = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
@@ -76,7 +69,7 @@ namespace BackendGastos.Service.Services
         {
             var subCategoriaIngreso = await _subCategoriaIngresoRepository.GetActiveById(id);
 
-            if ( subCategoriaIngreso != null)
+            if (subCategoriaIngreso != null)
             {
                 var subCategoriaIngresoDto = _mapper.Map<SubCategoriaIngresoDto?>(subCategoriaIngreso);
                 return subCategoriaIngresoDto;
@@ -271,6 +264,6 @@ namespace BackendGastos.Service.Services
             return flag;
         }
 
-   
+
     }
 }

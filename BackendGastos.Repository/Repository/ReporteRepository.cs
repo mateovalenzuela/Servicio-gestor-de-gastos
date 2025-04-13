@@ -1,10 +1,5 @@
 ﻿using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
@@ -30,7 +25,7 @@ namespace BackendGastos.Repository.Repository
 
             var importeTotalGastos = await _context.GastosGastos
                 .Where(g => g.UsuarioId == idUser && g.Baja == false)
-                .Select (g => g.Importe)
+                .Select(g => g.Importe)
                 .SumAsync();
             importesDict.Add("ImporteGastos", importeTotalGastos);
 
@@ -43,16 +38,16 @@ namespace BackendGastos.Repository.Repository
             var importesDict = new Dictionary<string, decimal>();
 
             var importeTotalIngresos = await _context.GastosIngresos
-                .Where(i => i.UsuarioId == idUser && i.Baja == false && 
-                i.FechaCreacion >= fechaInicial && 
+                .Where(i => i.UsuarioId == idUser && i.Baja == false &&
+                i.FechaCreacion >= fechaInicial &&
                 i.FechaCreacion <= fechaLimite)
                 .Select(i => i.Importe)
                 .SumAsync();
             importesDict.Add("ImporteIngresos", importeTotalIngresos);
 
             var importeTotalGastos = await _context.GastosGastos
-                .Where(g => g.UsuarioId == idUser && g.Baja == false && 
-                g.FechaCreacion >= fechaInicial && 
+                .Where(g => g.UsuarioId == idUser && g.Baja == false &&
+                g.FechaCreacion >= fechaInicial &&
                 g.FechaCreacion <= fechaLimite)
                 .Select(g => g.Importe)
                 .SumAsync();

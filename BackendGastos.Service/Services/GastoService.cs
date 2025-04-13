@@ -2,11 +2,6 @@
 using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.Gasto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Service.Services
 {
@@ -21,11 +16,11 @@ namespace BackendGastos.Service.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IMonedaRepository _monedaRepository;
 
-        public GastoService(IGastoRepository gastoRepository, 
-            IMapper mapper, 
-            ISubCategoriaGastoRepository subCategoriaRepository, 
-            ICategoriaGastoRepository categoriaGastoRepository, 
-            IUsuarioRepository usuarioRepository, 
+        public GastoService(IGastoRepository gastoRepository,
+            IMapper mapper,
+            ISubCategoriaGastoRepository subCategoriaRepository,
+            ICategoriaGastoRepository categoriaGastoRepository,
+            IUsuarioRepository usuarioRepository,
             IMonedaRepository monedaRepository)
         {
             Errors = [];
@@ -40,7 +35,6 @@ namespace BackendGastos.Service.Services
         public async Task<GastoDto> Add(InsertUpdateGastoDto insertUpdateDto)
         {
             var gasto = _mapper.Map<GastosGasto>(insertUpdateDto);
-            gasto.FechaCreacion = DateTime.UtcNow;
 
             gasto.CategoriaGasto = await _categoriaGastoRepository.GetActiveById(insertUpdateDto.CategoriaGastoId);
             gasto.SubcategoriaGasto = await _subCategoriaRepository.GetActiveById(insertUpdateDto.SubcategoriaGastoId);

@@ -1,10 +1,4 @@
-﻿using BackendGastos.Service.DTOs.CategoriaGasto;
-using BackendGastos.Service.DTOs.CategoriaIngreso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BackendGastos.Service.DTOs.CategoriaIngreso;
 
 namespace BackendGastos.Service.Services
 {

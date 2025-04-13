@@ -1,11 +1,4 @@
-﻿using BackendGastos.Service.DTOs.Gasto;
-using BackendGastos.Service.DTOs.Ingreso;
-using BackendGastos.Service.DTOs.SubCategoriaIngreso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BackendGastos.Service.DTOs.Ingreso;
 
 namespace BackendGastos.Service.Services
 {

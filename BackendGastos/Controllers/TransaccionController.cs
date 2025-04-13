@@ -1,5 +1,4 @@
-﻿using BackendGastos.Service.DTOs.Gasto;
-using BackendGastos.Service.DTOs.Transaccion;
+﻿using BackendGastos.Service.DTOs.Transaccion;
 using BackendGastos.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +25,6 @@ namespace BackendGastos.Controller.Controllers
         [HttpGet("importes/usuario/{idUser}")]
         public async Task<ActionResult<ImporteTransaccionDto>> GetImportes(long idUser)
             => await _transaccionService.GetImportes(idUser);
-            
+
     }
 }

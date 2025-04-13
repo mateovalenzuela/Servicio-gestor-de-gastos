@@ -1,28 +1,10 @@
 ﻿using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.AutoMappers;
-using BackendGastos.Service.DTOs.CategoriaGasto;
-using BackendGastos.Service.DTOs.CategoriaIngreso;
-using BackendGastos.Service.DTOs.Gasto;
-using BackendGastos.Service.DTOs.Ingreso;
-using BackendGastos.Service.DTOs.SubCategoriaGasto;
-using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
-using BackendGastos.Validator.CategoriaGasto;
-using BackendGastos.Validator.CategoriaIngreso;
-using BackendGastos.Validator.Gasto;
-using BackendGastos.Validator.Ingreso;
-using BackendGastos.Validator.SubCategoriaGasto;
-using BackendGastos.Validator.SubCategoriaIngreso;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Test
 {
@@ -66,28 +48,6 @@ namespace BackendGastos.Test
             builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
             builder.AddScoped<IUsuarioRepository, UsuarioRepository>();
 
-
-            // Validators 
-            // CategoriaIngreso
-            builder.AddScoped<IValidator<InsertUpdateCategoriaIngresoDto>, InsertUpdateCategoriaIngresoValidator>();
-            builder.AddScoped<IValidator<CategoriaIngresoDto>, CategoriaIngresoValidator>();
-            // CategoriaGasto
-            builder.AddScoped<IValidator<InsertUpdateCategoriaGastoDto>, InsertUpdateCategoriaGastoValidator>();
-            builder.AddScoped<IValidator<CategoriaGastoDto>, CategoriaGastoValidator>();
-            // SubCategoriaIngreso
-            builder.AddScoped<IValidator<InsertUpdateSubCategoriaIngresoDto>, InsertUpdateSubCategoriaIngresoValidator>();
-            builder.AddScoped<IValidator<SubCategoriaIngresoDto>, SubCategoriaIngresoValidator>();
-            // SubCategoriaGasto
-            builder.AddScoped<IValidator<InsertUpdateSubCategoriaGastoDto>, InsertUpdateSubCategoriaGastoValidator>();
-            builder.AddScoped<IValidator<SubCategoriaGastoDto>, SubCategoriaGastoValidator>();
-            // Ingreso
-            builder.AddScoped<IValidator<InsertUpdateIngresoDto>, InsertUpdateIngresoValidator>();
-            builder.AddScoped<IValidator<IngresoDto>, IngresoValidator>();
-            // Gasto
-            builder.AddScoped<IValidator<InsertUpdateGastoDto>, InsertUpdateGastoValidator>();
-            builder.AddScoped<IValidator<GastoDto>, GastoValidator>();
-
-
             // Repository
             builder.AddScoped<ICategoriaIngresoRepository, CategoriaIngresoRepository>();
             builder.AddScoped<ICategoriaGastoRepository, CategoriaGastoRepository>();
@@ -123,13 +83,13 @@ namespace BackendGastos.Test
             var serviceProvider = builder.BuildServiceProvider();
 
             // Initialize database with seed data if using in-memory database
-            
+
             using (var scope = serviceProvider.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ProyectoGastosTestContext>();
                 DatabaseInitializer.Initialize(context);
             }
-            
+
 
             return serviceProvider;
         }

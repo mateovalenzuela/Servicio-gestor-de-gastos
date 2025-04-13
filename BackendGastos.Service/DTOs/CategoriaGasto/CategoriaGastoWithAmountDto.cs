@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendGastos.Service.DTOs.CategoriaGasto
+﻿namespace BackendGastos.Service.DTOs.CategoriaGasto
 {
     public class CategoriaGastoWithAmountDto : IEquatable<CategoriaGastoWithAmountDto>
     {

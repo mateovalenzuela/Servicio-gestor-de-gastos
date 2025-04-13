@@ -1,21 +1,11 @@
 ﻿using BackendGastos.Controller.Controllers;
 using BackendGastos.Repository.Models;
 using BackendGastos.Service.DTOs.CategoriaGasto;
-using BackendGastos.Service.DTOs.CategoriaIngreso;
 using BackendGastos.Service.DTOs.Gasto;
-using BackendGastos.Service.DTOs.Ingreso;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
-using BackendGastos.Service.DTOs.SubCategoriaIngreso;
 using BackendGastos.Service.Services;
-using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Test
 {
@@ -54,12 +44,8 @@ namespace BackendGastos.Test
             _context = _serviceProvider.GetRequiredService<ProyectoGastosTestContext>();
 
             var gastoService = _serviceProvider.GetRequiredService<IGastoService>();
-            var gastoValidator = _serviceProvider.GetRequiredService<IValidator<GastoDto>>();
-            var insertUpdateGastoValidator = _serviceProvider.GetRequiredService<IValidator<InsertUpdateGastoDto>>();
 
             _controller = new GastoController(
-                gastoValidator,
-                insertUpdateGastoValidator,
                 gastoService
             );
 
@@ -446,8 +432,8 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Equal(6, errors.Count);
+            //var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            //Assert.Equal(6, errors.Count);
         }
 
         [Fact]
@@ -553,8 +539,8 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Equal(6, errors.Count);
+            //var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            //Assert.Equal(6, errors.Count);
         }
 
         [Fact]
@@ -593,7 +579,7 @@ namespace BackendGastos.Test
                 UsuarioId = selectedGasto2.UsuarioId,
                 CategoriaGastoId = selectedGasto2.CategoriaGastoId,
                 SubcategoriaGastoId = selectedGasto2.SubcategoriaGastoId,
-                MonedaId =  selectedGasto2.MonedaId,
+                MonedaId = selectedGasto2.MonedaId,
                 Importe = selectedGasto2.Importe,
             };
 

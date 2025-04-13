@@ -1,6 +1,4 @@
-﻿using BackendGastos.Service.DTOs.SubCategoriaGasto;
-
-namespace BackendGastos.Service.DTOs.SubCategoriaIngreso
+﻿namespace BackendGastos.Service.DTOs.SubCategoriaIngreso
 {
     public class SubCategoriaIngresoDto : IEquatable<SubCategoriaIngresoDto>
     {

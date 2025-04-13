@@ -10,14 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BackendGastos.Repository\BackendGastos.Repository.csproj" />
     <ProjectReference Include="..\BackendGastos.Service\BackendGastos.Service.csproj" />
-    <ProjectReference Include="..\BackendGastos.Validator\BackendGastos.Validator.csproj" />
   </ItemGroup>
 
 </Project>

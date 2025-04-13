@@ -1,13 +1,7 @@
 ﻿using AutoMapper;
 using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
-using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Service.DTOs.Ingreso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Service.Services
 {
@@ -22,11 +16,11 @@ namespace BackendGastos.Service.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IMonedaRepository _monedaRepository;
 
-        public IngresoService(IIngresoRepository ingresoRepository, 
-            IMapper mapper, 
-            ISubCategoriaIngresoRepository subCategoriaIngresoRepository, 
-            ICategoriaIngresoRepository categoriaIngresoRepository, 
-            IUsuarioRepository usuarioRepository, 
+        public IngresoService(IIngresoRepository ingresoRepository,
+            IMapper mapper,
+            ISubCategoriaIngresoRepository subCategoriaIngresoRepository,
+            ICategoriaIngresoRepository categoriaIngresoRepository,
+            IUsuarioRepository usuarioRepository,
             IMonedaRepository monedaRepository)
         {
             Errors = [];
@@ -41,7 +35,6 @@ namespace BackendGastos.Service.Services
         public async Task<IngresoDto> Add(InsertUpdateIngresoDto insertUpdateDto)
         {
             var ingreso = _mapper.Map<GastosIngreso>(insertUpdateDto);
-            ingreso.FechaCreacion = DateTime.UtcNow;
 
             ingreso.CategoriaIngreso = await _categoriaIngresoRepository.GetActiveById(insertUpdateDto.CategoriaIngresoId);
             ingreso.SubcategoriaIngreso = await _subCategoriaIngresoRepository.GetActiveById(insertUpdateDto.SubcategoriaIngresoId);

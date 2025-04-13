@@ -1,10 +1,5 @@
 ﻿using BackendGastos.Repository.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Repository.Repository
 {
@@ -105,13 +100,13 @@ namespace BackendGastos.Repository.Repository
             => await _context.SaveChangesAsync();
 
         public IEnumerable<GastosGasto> Search(Func<GastosGasto, bool> filter, int limit)
-            =>  _context.GastosGastos.Where(filter).Take(limit).ToList();
+            => _context.GastosGastos.Where(filter).Take(limit).ToList();
 
         public async Task<IEnumerable<GastosGasto>> SearchActiveByDescripcionParcial(long idUser, string descripcion, int limit)
         {
             var gastos = await _context.GastosGastos
                 .Where(g => g.UsuarioId == idUser && g.Baja == false && g.Descripcion.ToLower().Contains(descripcion.ToLower()))
-                .GroupBy( g => g.Descripcion)
+                .GroupBy(g => g.Descripcion)
                 .Select(g => g.OrderByDescending(x => x.Id).First()) // Ordena cada grupo por Id y selecciona el último
                 .Take(limit)
                 .ToListAsync();

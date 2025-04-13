@@ -1,11 +1,4 @@
-﻿using BackendGastos.Service.DTOs.CategoriaIngreso;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendGastos.Service.Services
+﻿namespace BackendGastos.Service.Services
 {
     public interface ICommonService<TDto, InsertUpdateTDto>
     {
@@ -15,6 +8,6 @@ namespace BackendGastos.Service.Services
         Task<TDto> Add(InsertUpdateTDto insertUpdateDto);
         Task<TDto?> Update(long id, InsertUpdateTDto insertUpdateDto);
         Task<TDto?> Delete(long id);
-        
+
     }
 }

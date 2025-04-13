@@ -1,19 +1,10 @@
 ﻿using BackendGastos.Controller.Controllers;
-using BackendGastos.Service.DTOs.SubCategoriaGasto;
-using BackendGastos.Service.Services;
-using FluentValidation.Results;
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackendGastos.Service.DTOs.SubCategoriaIngreso;
-using Microsoft.Extensions.DependencyInjection;
 using BackendGastos.Repository.Models;
 using BackendGastos.Service.DTOs.CategoriaGasto;
-using System.ComponentModel;
+using BackendGastos.Service.DTOs.SubCategoriaGasto;
+using BackendGastos.Service.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BackendGastos.Test
 {
@@ -43,12 +34,8 @@ namespace BackendGastos.Test
             _context = _serviceProvider.GetRequiredService<ProyectoGastosTestContext>();
 
             var subCategoriaGastoService = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
-            var subCategoriaGastoValidator = _serviceProvider.GetRequiredService<IValidator<SubCategoriaGastoDto>>();
-            var insertUpdateSubCategoriaGastoValidator = _serviceProvider.GetRequiredService<IValidator<InsertUpdateSubCategoriaGastoDto>>();
 
             _controller = new SubCategoriaGastoController(
-                subCategoriaGastoValidator,
-                insertUpdateSubCategoriaGastoValidator,
                 subCategoriaGastoService);
 
 
@@ -58,7 +45,7 @@ namespace BackendGastos.Test
 
             _validSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Spotify", UsuarioId = 1, CategoriaGastoId = 1 };
             _validSubCat2 = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Netflix", UsuarioId = 1, CategoriaGastoId = 1 };
-            _validSubCat3 = new  InsertUpdateSubCategoriaGastoDto { Descripcion = "Supermercado", UsuarioId = 1, CategoriaGastoId = 2 };
+            _validSubCat3 = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Supermercado", UsuarioId = 1, CategoriaGastoId = 2 };
             _ivalidSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "", UsuarioId = -1, CategoriaGastoId = -2 };
             _repeatedSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Netflix", UsuarioId = 1, CategoriaGastoId = 1 };
             _createSubCat = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Verduleria", UsuarioId = 1, CategoriaGastoId = 2 };
@@ -86,7 +73,7 @@ namespace BackendGastos.Test
             var servicioNecesario = _serviceProvider.GetRequiredService<ISubCategoriaGastoService>();
             var servicioCategoriaGasto = _serviceProvider.GetRequiredService<ICategoriaGastoService>();
 
-            
+
             _ = await servicioCategoriaGasto.Add(_validCat);
             _ = await servicioCategoriaGasto.Add(_validCat2);
 
@@ -95,7 +82,7 @@ namespace BackendGastos.Test
             var addedSubCategoria2 = await servicioNecesario.Add(_validSubCat2);
             var addedSubCategoria3 = await servicioNecesario.Add(_validSubCat3);
 
-            var expectedSubCategorias = new List<SubCategoriaGastoDto> {addedSubCategoria1, addedSubCategoria2, addedSubCategoria3 };
+            var expectedSubCategorias = new List<SubCategoriaGastoDto> { addedSubCategoria1, addedSubCategoria2, addedSubCategoria3 };
             return expectedSubCategorias;
         }
 
@@ -114,12 +101,12 @@ namespace BackendGastos.Test
             var resultList = result.ToList();
             Assert.Equal(resultList, expectedSubCategorias);
         }
-        
+
         [Fact]
         public async Task Get_ReturnsEmpitySubCategoriaGastoDtoList()
         {
             // Arrange
-            
+
 
             // Act
             var result = await _controller.Get();
@@ -129,13 +116,13 @@ namespace BackendGastos.Test
             Assert.Empty(result);
         }
 
-        
+
 
         [Fact]
         public async Task Get_ReturnsNotFound_WhenSubCategoriaGastoDtoNotFound()
         {
             // Arrange
-            
+
 
             // Act
             var result = await _controller.Get(1);
@@ -145,7 +132,7 @@ namespace BackendGastos.Test
             Assert.Null(result.Value);
         }
 
-        
+
         [Fact]
         public async Task GetByCategoriaGasto_ReturnsSubCategoriaGastoDtoList()
         {
@@ -153,7 +140,7 @@ namespace BackendGastos.Test
             var idCat = 1L;
             var insertedSubCategorias = await ArrangeAddStup();
             var expectedSubCategorias = insertedSubCategorias.Where(s => s.CategoriaGastoId == idCat).ToList();
-            
+
             // Act
             var result = await _controller.GetByCategoriaGasto(idCat);
 
@@ -164,10 +151,10 @@ namespace BackendGastos.Test
             Assert.NotNull(actualSubCategorias);
             Assert.Equal(expectedSubCategorias, actualSubCategorias);
             Assert.Equal(expectedSubCategorias.Count, actualSubCategorias.Count);
-            
+
         }
 
-        
+
         [Fact]
         public async Task GetByCategoriaGasto_ReturnsNull()
         {
@@ -184,7 +171,7 @@ namespace BackendGastos.Test
             Assert.Null(result.Value);
         }
 
-        
+
         [Fact]
         public async Task GetByUsuario_ReturnsSubCategoriaGastoDtoList()
         {
@@ -204,7 +191,7 @@ namespace BackendGastos.Test
             Assert.Equal(expectedSubCategorias, actualSubCategorias);
         }
 
-        
+
         [Fact]
         public async Task GetByUser_ReturnsNull()
         {
@@ -247,7 +234,7 @@ namespace BackendGastos.Test
             Assert.Equal(expectedSubCategorias.Count, actualSubCategorias.Count);
         }
 
-        
+
         [Fact]
         public async Task GetByUserAndCategoriaGasto_ReturnsNull()
         {
@@ -265,7 +252,7 @@ namespace BackendGastos.Test
 
 
 
-        
+
         [Fact]
         public async Task Get_ReturnsOk_WhenSubCategoriaGastoDtoFound()
         {
@@ -281,9 +268,9 @@ namespace BackendGastos.Test
 
             Assert.NotNull(actualValue);
             Assert.Equal(catSelected, actualValue);
-            
+
         }
-        
+
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenModelIsInvalid()
         {
@@ -295,10 +282,10 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Equal(3, errors.Count);
+            //var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            //Assert.Equal(3, errors.Count);
         }
-        
+
         [Fact]
         public async Task Add_ReturnsBadRequest_WhenServiceValidationFails()
         {
@@ -313,7 +300,7 @@ namespace BackendGastos.Test
             var errors = Assert.IsAssignableFrom<Dictionary<string, string>>(badRequestResult.Value);
             Assert.True(errors.ContainsKey("Descripcion"));
         }
-        
+
         [Fact]
         public async Task Add_ReturnsCreatedAtAction_WhenModelIsValid()
         {
@@ -328,7 +315,7 @@ namespace BackendGastos.Test
             Assert.NotNull(createdAtActionResult.Value);
             Assert.IsType<SubCategoriaGastoDto>(createdAtActionResult.Value);
         }
-        
+
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenModelIsInvalid()
         {
@@ -341,10 +328,10 @@ namespace BackendGastos.Test
 
             // Assert
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
-            Assert.Equal(errors.Count, 3);
+            //var errors = Assert.IsAssignableFrom<List<ValidationFailure>>(badRequestResult.Value);
+            //Assert.Equal(errors.Count, 3);
         }
-        
+
         [Fact]
         public async Task Put_ReturnsBadRequest_WhenServiceValidationFails()
         {
@@ -380,14 +367,14 @@ namespace BackendGastos.Test
             Assert.Null(result.Value);
 
         }
-        
+
         [Fact]
         public async Task Put_ReturnsOk_WhenModelIsValid()
         {
             // Arrange
             var insertedSubCategorias = await ArrangeAddStup();
             var selectedSubCategoria = insertedSubCategorias.FirstOrDefault();
-            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Disney +", CategoriaGastoId = selectedSubCategoria.CategoriaGastoId , UsuarioId = selectedSubCategoria.UsuarioId };
+            var insertDto = new InsertUpdateSubCategoriaGastoDto { Descripcion = "Disney +", CategoriaGastoId = selectedSubCategoria.CategoriaGastoId, UsuarioId = selectedSubCategoria.UsuarioId };
             var expectedSubCategoria = new SubCategoriaGastoDto
             {
                 Id = selectedSubCategoria.Id,
@@ -402,7 +389,7 @@ namespace BackendGastos.Test
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(expectedSubCategoria, okResult.Value);
         }
-        
+
         [Fact]
         public async Task Delete_ReturnsNotFound_WhenSubCategoriaGastoDtoNotFound()
         {
@@ -418,7 +405,7 @@ namespace BackendGastos.Test
             Assert.Null(result.Value);
         }
 
-        
+
         [Fact]
         public async Task Delete_ReturnsOk_WhenSubCategoriaGastoDtoDeleted()
         {
@@ -432,8 +419,8 @@ namespace BackendGastos.Test
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(selectedSubCategoria, okResult.Value);
-            Assert.Null(_context.GastosSubcategoriagastos.FirstOrDefault(s => s.Id == selectedSubCategoria.Id 
+            Assert.Null(_context.GastosSubcategoriagastos.FirstOrDefault(s => s.Id == selectedSubCategoria.Id
                                                                                 && s.Baja == false));
         }
-    }   
+    }
 }

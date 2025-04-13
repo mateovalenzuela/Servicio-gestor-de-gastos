@@ -1,6 +1,4 @@
-﻿using BackendGastos.Service.DTOs.Ingreso;
-
-namespace BackendGastos.Service.DTOs.Gasto
+﻿namespace BackendGastos.Service.DTOs.Gasto
 {
     public class GastoDto : IEquatable<GastoDto>
     {
@@ -43,7 +41,7 @@ namespace BackendGastos.Service.DTOs.Gasto
         public override bool Equals(object obj) => Equals(obj as GastoDto);
 
         public override int GetHashCode() =>
-            HashCode.Combine(Id, Descripcion, Importe, UsuarioId, 
+            HashCode.Combine(Id, Descripcion, Importe, UsuarioId,
                             CategoriaGastoId, SubcategoriaGastoId,
                             FechaCreacion, MonedaId);
 

@@ -1,11 +1,5 @@
-﻿using AutoMapper;
-using BackendGastos.Repository.Repository;
+﻿using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.Reporte;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Service.Services
 {

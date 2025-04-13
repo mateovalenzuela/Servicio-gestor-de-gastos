@@ -1,6 +1,4 @@
-﻿using BackendGastos.Service.DTOs.CategoriaIngreso;
-
-namespace BackendGastos.Service.DTOs.CategoriaGasto
+﻿namespace BackendGastos.Service.DTOs.CategoriaGasto
 {
     public class CategoriaGastoDto : IEquatable<CategoriaGastoDto>
     {

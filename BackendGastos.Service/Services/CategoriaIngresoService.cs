@@ -1,15 +1,7 @@
-﻿using BackendGastos.Service.DTOs.CategoriaIngreso;
-using BackendGastos.Repository.Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection.Metadata.Ecma335;
+﻿using AutoMapper;
 using BackendGastos.Repository.Models;
-using Microsoft.EntityFrameworkCore;
-using AutoMapper;
-using BackendGastos.Service.DTOs.CategoriaGasto;
+using BackendGastos.Repository.Repository;
+using BackendGastos.Service.DTOs.CategoriaIngreso;
 
 namespace BackendGastos.Service.Services
 {
@@ -28,13 +20,11 @@ namespace BackendGastos.Service.Services
             Errors = new Dictionary<string, string>();
         }
 
-        
+
 
         public async Task<CategoriaIngresoDto> Add(InsertUpdateCategoriaIngresoDto insertUpadateCategoriaIngresoDto)
         {
             var categoriaIngreso = _mapper.Map<GastosCategoriaigreso>(insertUpadateCategoriaIngresoDto);
-            categoriaIngreso.FechaCreacion = DateTime.UtcNow;
-
 
             await _categoriaIngresoRepository.Add(categoriaIngreso);
             await _categoriaIngresoRepository.Save();

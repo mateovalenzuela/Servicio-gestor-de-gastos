@@ -1,9 +1,4 @@
 ﻿using BackendGastos.Repository.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Test
 {
@@ -23,7 +18,7 @@ namespace BackendGastos.Test
             // Add two users
             var usuarios = new List<AuthenticationUsuario>
             {
-            new() { Id = 1, Username = "Test 1", Email = "usuario_test1@example.com", Password = "fwewfwefwe", 
+            new() { Id = 1, Username = "Test 1", Email = "usuario_test1@example.com", Password = "fwewfwefwe",
                     IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },
             new() { Id = 2, Username = "Test 2", Email = "usuario_test2@example.com", Password = "fwewfwefwe",
                     IsActive = true, IsSuperuser = false,  EmailConfirmado = true, IsStaff = false, },

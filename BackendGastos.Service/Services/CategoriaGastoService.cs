@@ -1,12 +1,7 @@
-﻿using BackendGastos.Service.DTOs.CategoriaGasto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackendGastos.Repository.Repository;
+﻿using AutoMapper;
 using BackendGastos.Repository.Models;
-using AutoMapper;
+using BackendGastos.Repository.Repository;
+using BackendGastos.Service.DTOs.CategoriaGasto;
 
 namespace BackendGastos.Service.Services
 {
@@ -21,14 +16,13 @@ namespace BackendGastos.Service.Services
         {
             _categoriaGastoRepository = categoriaGastoRepository;
             _mapper = mapper;
-            _usuarioRepository = usuarioRepository; 
+            _usuarioRepository = usuarioRepository;
             Errors = new Dictionary<string, string>();
         }
 
         public async Task<CategoriaGastoDto> Add(InsertUpdateCategoriaGastoDto insertUpdateDto)
         {
             var categoriaGasto = _mapper.Map<GastosCategoriagasto>(insertUpdateDto);
-            categoriaGasto.FechaCreacion = DateTime.UtcNow;
 
             await _categoriaGastoRepository.Add(categoriaGasto);
             await _categoriaGastoRepository.Save();
@@ -57,7 +51,7 @@ namespace BackendGastos.Service.Services
         {
             var categoriaGasto = await _categoriaGastoRepository.GetActive();
 
-            var categoriaGastoDtos = categoriaGasto.Select(c=> _mapper.Map<CategoriaGastoDto>(c)).ToList();
+            var categoriaGastoDtos = categoriaGasto.Select(c => _mapper.Map<CategoriaGastoDto>(c)).ToList();
             return categoriaGastoDtos;
         }
 
@@ -102,7 +96,7 @@ namespace BackendGastos.Service.Services
 
         public bool Validate(InsertUpdateCategoriaGastoDto insertUpdateDto)
         {
-            if (_categoriaGastoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion).Count() > 0 )
+            if (_categoriaGastoRepository.Search(c => c.Descripcion == insertUpdateDto.Descripcion).Count() > 0)
             {
                 Errors.Add("Categoria", "La categoria ya existe");
                 return false;
@@ -122,7 +116,7 @@ namespace BackendGastos.Service.Services
 
             if (categoriasGastoWithAmount != null)
             {
-                var categoriaGastoWithAmountDto = categoriasGastoWithAmount.Select(cA =>  _mapper.Map<CategoriaGastoWithAmountDto>(cA));
+                var categoriaGastoWithAmountDto = categoriasGastoWithAmount.Select(cA => _mapper.Map<CategoriaGastoWithAmountDto>(cA));
                 return categoriaGastoWithAmountDto;
             }
             return null;

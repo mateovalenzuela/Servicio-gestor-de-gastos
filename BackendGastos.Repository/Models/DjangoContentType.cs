@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BackendGastos.Repository.Models;
+﻿namespace BackendGastos.Repository.Models;
 
 public partial class DjangoContentType
 {

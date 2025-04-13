@@ -1,7 +1,5 @@
 ﻿using BackendGastos.Service.DTOs.Gasto;
 using BackendGastos.Service.Services;
-using BackendGastos.Validator.Gasto;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,19 +10,10 @@ namespace BackendGastos.Controller.Controllers
     [ApiController]
     public class GastoController : ControllerBase
     {
-
-        private readonly IValidator<GastoDto> _gastoValidator;
-        private readonly IValidator<InsertUpdateGastoDto> _insertUpdateGastoValidator;
         private readonly IGastoService _gastoService;
 
-        public GastoController(IValidator<GastoDto> gastoValidator, 
-            IValidator<InsertUpdateGastoDto> insertUpdateGastoValidator, 
-            IGastoService gastoService
-        )
-
+        public GastoController(IGastoService gastoService)
         {
-            _gastoValidator = gastoValidator;
-            _insertUpdateGastoValidator = insertUpdateGastoValidator;
             _gastoService = gastoService;
         }
 
@@ -54,14 +43,6 @@ namespace BackendGastos.Controller.Controllers
         [HttpGet("usuario/{idUser}/descripcion/{descripcion}")]
         public async Task<ActionResult<GastoDto>> SearchByDescripcionParcial(long idUser, string descripcion)
         {
-            var gastoDto = new GastoDto { Descripcion = descripcion };
-            var validationResult = await new SearchGastoValidator().ValidateAsync(gastoDto);
-
-            if (!validationResult.IsValid)
-            {
-                return NotFound(validationResult.Errors);
-            }
-
             var gastosDto = await _gastoService.SearchByDescripcionParcial(idUser, descripcion);
             return gastosDto == null ? NotFound() : Ok(gastosDto);
         }
@@ -95,33 +76,19 @@ namespace BackendGastos.Controller.Controllers
         [HttpPost]
         public async Task<ActionResult<GastoDto>> Add(InsertUpdateGastoDto insertUpdateGastoDto)
         {
-            var validationResult = await _insertUpdateGastoValidator.ValidateAsync(insertUpdateGastoDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
-            if (! await _gastoService.Validate(insertUpdateGastoDto))
+            if (!await _gastoService.Validate(insertUpdateGastoDto))
             {
                 return BadRequest(_gastoService.Errors);
             }
 
             var gastoDto = await _gastoService.Add(insertUpdateGastoDto);
-            return CreatedAtAction(nameof(Get), new {Id = gastoDto.Id}, gastoDto);
+            return CreatedAtAction(nameof(Get), new { Id = gastoDto.Id }, gastoDto);
         }
 
         // PUT api/<GastoController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult<GastoDto>> Put(long id, InsertUpdateGastoDto insertUpdateGastoDto)
         {
-            var validationResult = await _insertUpdateGastoValidator.ValidateAsync(insertUpdateGastoDto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
             if (!await _gastoService.Validate(insertUpdateGastoDto))
             {
                 return BadRequest(_gastoService.Errors);

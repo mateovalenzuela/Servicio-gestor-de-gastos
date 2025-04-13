@@ -2,12 +2,6 @@
 using BackendGastos.Repository.Models;
 using BackendGastos.Repository.Repository;
 using BackendGastos.Service.DTOs.SubCategoriaGasto;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BackendGastos.Service.Services
 {
@@ -20,9 +14,9 @@ namespace BackendGastos.Service.Services
         private readonly ICategoriaGastoRepository _categoriaGastoRepository;
         private readonly IUsuarioRepository _usuarioRepository;
 
-        public SubCategoriaGastoService(ISubCategoriaGastoRepository subCategoriaGastoRepository, 
-            IMapper mapper, 
-            ICategoriaGastoRepository categoriaGastoRepository, 
+        public SubCategoriaGastoService(ISubCategoriaGastoRepository subCategoriaGastoRepository,
+            IMapper mapper,
+            ICategoriaGastoRepository categoriaGastoRepository,
             IUsuarioRepository usuarioRepository)
         {
             Errors = [];
@@ -35,7 +29,6 @@ namespace BackendGastos.Service.Services
         public async Task<SubCategoriaGastoDto> Add(InsertUpdateSubCategoriaGastoDto insertUpdateDto)
         {
             var subCategoriaGasto = _mapper.Map<GastosSubcategoriagasto>(insertUpdateDto);
-            subCategoriaGasto.FechaCreacion = DateTime.UtcNow;
 
             subCategoriaGasto.CategoriaGasto = await _categoriaGastoRepository.GetActiveById(insertUpdateDto.CategoriaGastoId);
             subCategoriaGasto.Usuario = await _usuarioRepository.GetActiveById(insertUpdateDto.UsuarioId);
@@ -121,7 +114,7 @@ namespace BackendGastos.Service.Services
                 {
                     subcategorias = subCategoriasGastoDto.Where(s => s.CategoriaGastoId == categoria.Id).ToList();
                 }
-                
+
                 var dto = new CategoriaGastoYSubCategoriasGastoDto()
                 {
                     Id = categoria.Id,

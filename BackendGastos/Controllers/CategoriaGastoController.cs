@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BackendGastos.Service.DTOs.CategoriaGasto;
+﻿using BackendGastos.Service.DTOs.CategoriaGasto;
 using BackendGastos.Service.Services;
-using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,16 +11,10 @@ namespace BackendGastos.Controller.Controllers
     public class CategoriaGastoController : ControllerBase
     {
 
-        private readonly IValidator<CategoriaGastoDto> _categoriaGastoValidator;
-        private readonly IValidator<InsertUpdateCategoriaGastoDto> _insertUpdateCategoriaGastoValidator;
         private readonly ICategoriaGastoService _categoriaGastoService;
 
-        public CategoriaGastoController(IValidator<CategoriaGastoDto> categoriaGastoValidator, 
-            IValidator<InsertUpdateCategoriaGastoDto> insertUpdateCategoriaGastoValidator, 
-            ICategoriaGastoService categoriaGastoService)
+        public CategoriaGastoController(ICategoriaGastoService categoriaGastoService)
         {
-            _categoriaGastoValidator = categoriaGastoValidator;
-            _insertUpdateCategoriaGastoValidator = insertUpdateCategoriaGastoValidator;
             _categoriaGastoService = categoriaGastoService;
         }
 
@@ -37,20 +30,13 @@ namespace BackendGastos.Controller.Controllers
         {
             var categoriaGastoDto = await _categoriaGastoService.GetById(id);
 
-            return categoriaGastoDto == null? NotFound() : Ok(categoriaGastoDto);
+            return categoriaGastoDto == null ? NotFound() : Ok(categoriaGastoDto);
         }
 
         // POST api/<CategoriaGastoController>
         [HttpPost]
         public async Task<ActionResult<CategoriaGastoDto>> Add(InsertUpdateCategoriaGastoDto insertUpdateCategoriaGasto)
         {
-            var validationResult = await _insertUpdateCategoriaGastoValidator.ValidateAsync(insertUpdateCategoriaGasto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
             if (!_categoriaGastoService.Validate(insertUpdateCategoriaGasto))
             {
                 return BadRequest(_categoriaGastoService.Errors);
@@ -58,20 +44,13 @@ namespace BackendGastos.Controller.Controllers
 
             var categoriaGastoDto = await _categoriaGastoService.Add(insertUpdateCategoriaGasto);
 
-            return CreatedAtAction(nameof(Get), new {id = categoriaGastoDto.Id}, categoriaGastoDto);
+            return CreatedAtAction(nameof(Get), new { id = categoriaGastoDto.Id }, categoriaGastoDto);
         }
 
         // PUT api/<CategoriaGastoController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult<CategoriaGastoDto>> Put(long id, InsertUpdateCategoriaGastoDto insertUpdateCategoriaGasto)
         {
-            var validationResult = await _insertUpdateCategoriaGastoValidator.ValidateAsync(insertUpdateCategoriaGasto);
-
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
             if (!_categoriaGastoService.Validate(insertUpdateCategoriaGasto, id))
             {
                 return BadRequest(_categoriaGastoService.Errors);
@@ -79,7 +58,7 @@ namespace BackendGastos.Controller.Controllers
 
             var categoriaGastoDto = await _categoriaGastoService.Update(id, insertUpdateCategoriaGasto);
 
-            return categoriaGastoDto == null? NotFound() : Ok(categoriaGastoDto);
+            return categoriaGastoDto == null ? NotFound() : Ok(categoriaGastoDto);
         }
 
         // DELETE api/<CategoriaGastoController>/5
