@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "https": {
+    "Develop": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
@@ -10,15 +10,16 @@
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:8081"
     },
-    "Container (Dockerfile)": {
-      "commandName": "Docker",
+
+    "Docker": {
+      "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "8081"
+        "ASPNETCORE_ENVIRONMENT": "Docker"
       },
-      "publishAllPorts": true,
-      "useSSL": true
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:8081"
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json"
