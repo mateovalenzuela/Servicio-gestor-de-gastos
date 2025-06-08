@@ -11,6 +11,8 @@ services:
         - "8081:8081" 
     depends_on:
       - postgres
+    environment:
+     - ASPNETCORE_ENVIRONMENT=Docker
 
   autenticacion:
     image: user_service
@@ -46,16 +48,6 @@ services:
       - POSTGRES_DB=${PG_DB_DEFAULT}
     volumes:
       - tesis-data:/var/lib/postgresql/data
-
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
-    ports:
-      - "80:80"
-    depends_on:
-      - postgres
 
 volumes:
   tesis-data:
